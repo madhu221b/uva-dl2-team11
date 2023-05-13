@@ -12,8 +12,21 @@ Message-passing graph neural networks (MP-GNNs) work by aggregating information 
 
 # Contribution
 
+(talk about ricci flow)
+
+(talk about enn )
+
+(talk about egnn )
+
 # Results
 
+(talk about result of ricci flow)
+
+(enn result)
+
+(egnn result)
+
+(influence score dist)
 # Conclusion
 
 # References
