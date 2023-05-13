@@ -26,6 +26,16 @@ Message-passing graph neural networks (MP-GNNs) work by aggregating information 
 
 (egnn result)
 
+| Model                 | Best train F1 | Best val F1 | Best test F1 |
+| --------------------- | ------------- | ----------- | ------------ |
+| GCN                   |             |             |              |
+| GatedGCN              |               |             |              |
+| Transformer+LapPE     |               |             |              |
+| E(n) invariant |       |     |     |
+| E(n) invariant - JK 1 |               |             |              |
+|  E(n) invariant - JK 2  |               |             |              |
+
+
 (influence score dist)
 # Conclusion
 
