@@ -18,9 +18,10 @@ Message-passing graph neural networks (MP-GNNs) work by aggregating information 
 
 (talk about egnn )
 
-<img width="1246" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9b0c9463-008f-47b7-817a-9a63c796e8a7">
-
-
+| <img width="1246" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9b0c9463-008f-47b7-817a-9a63c796e8a7">    | <img width="739" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/ed650fa6-ec70-4c9f-9594-87bcddc3cff2">	| 
+| -------- | -------- | 
+| Figure 1: E(n) Invariant and Equivariant Architecture    | Figure 2: Rewiring Inference Architecture   | 
+  
 # Results
 
 (talk about result of ricci flow)
