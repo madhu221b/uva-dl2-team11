@@ -43,7 +43,7 @@ In the table below, we present the F1 scores for the models we trained. Here JK1
 | E(n)-Invariant (JK 2)   | 523k      | 0.51587        | 0.23583     | 0.23675      |
 | E(n)-Equivariant        | 523k      | 0.3767         | 0.2434      | 0.2516       |
 | E(n)-Equivariant (JK 1) |           |                |             |              |
-| E(n)-Equivariant (JK 2) |           |                |             |              |
+| E(n)-Equivariant (JK 2) | 523k      | 0.4613         | 0.2399      | 0.2453       |
 | Transformer+LapPE       | 501k      | 0.8062         | 0.2624      | 0.2610       |
 
 (influence score dist)
