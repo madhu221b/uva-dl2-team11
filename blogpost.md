@@ -24,10 +24,13 @@ graphs with high values on both of these metrics.
 
 
 
-| <img width="1246" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9b0c9463-008f-47b7-817a-9a63c796e8a7">    | <img width="739" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/ed650fa6-ec70-4c9f-9594-87bcddc3cff2" id="fig2"> | <img src="assets/cheeger-median-against-path.png"> | <img src="assets/heat-map-three-values.png">                      | <img src="assets/histogram-graph-values-destribution.png"> | 
-| -------- | -------- |-------------------------------------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------|
-| Figure 1: E(n)-Invariant and E(n)-Equivariant Architecture    | Figure 2: Rewiring Inference Architecture  | Figure 3: Cheeger value against average shortest path | Figure 4: heat map of graph diameter against Cheeger value and average shortest path | Figure 5: Distribution of graphs across the 3 metrics     |  
+| <img width="1246" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9b0c9463-008f-47b7-817a-9a63c796e8a7">    | <img width="739" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/ed650fa6-ec70-4c9f-9594-87bcddc3cff2" id="fig2"> | 
+| -------- | -------- |
+| Figure 1: E(n)-Invariant and E(n)-Equivariant Architecture    | Figure 2: Rewiring Inference Architecture  |  
   
+  | <img src="assets/cheeger-median-against-path.png"> | <img src="assets/heat-map-three-values.png"> | <img src="assets/histogram-graph-values-destribution.png"> |
+ | -------------------------------------------|-------------------------------|-----------------------------------------------------------|
+ | Figure 3: Cheeger value against average shortest path | Figure 4: heat map of graph diameter against Cheeger value and average shortest path | Figure 5: Distribution of graphs across the 3 metrics |
 # Results
 
 In the table below, we present the F1 scores for the models we trained. Here JK1 denotes the jumping knowledge variant 1 where we concatenate hidden outputs of all layers. And JK2 denotes the jumping knowledge variant where we do maximum pooling of all the layers.
