@@ -38,7 +38,7 @@ python src/main_egnn.py --cfg src/configs/EGNN/vocsuperpixels-EGNN2.yaml device 
 ### W&B logging
 To use W&B logging, set `wandb.use True` and have a `gtransformers` entity set-up in your W&B account (or change it to whatever else you like by setting `wandb.entity`).
 
-### Model Inference
+### Calculate Influence Scores
 After training, the model checkpoints could be loaded up directly by providing the checkpoint path in the configuration at `cfg.train.finetune` and set `cfg.train.freeze_pretrained` to True. To compute influence scores, run src/model_inference.py and provide the relevant configuration file,
 
 ```bash
