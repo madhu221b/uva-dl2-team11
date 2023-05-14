@@ -69,7 +69,7 @@ Applying SDRF rewiring to the graphs of Pascal dataset and then training the Tra
 | 10                  | 0.2757       |
 | 20                  | 0.2635       |
 
-We see an increase in f1 scores on adding 10 edges to every graph, we also see a decrease in score on adding 20 edges. It would be intuitive on observing the underlying trend on varying the amount of edge additions and keeping this dynamic across all graphs of the dataset (future work).
+We see an increase in f1 scores on adding 10 edges to every graph, but we also see a decrease in score on adding 20 edges. It would be interesting to experiment with the amount of edges being added and the effect it has on f1 scores to reach an appropriate threshold after which rewiring becomes detrimental (ongoing work).
 
 In the table below, we present the F1 scores for the models we trained. Here JK1 denotes the jumping knowledge variant 1 where we concatenate hidden outputs of all layers. And JK2 denotes the jumping knowledge variant where we do maximum pooling of all the layers.
 
