@@ -70,6 +70,8 @@ Applying SDRF rewiring to the graphs of Pascal dataset and then training the Tra
 
 We see an increase in f1 scores on adding 10 edges to every graph, but we also see a decrease in score on adding 20 edges. It would be interesting to experiment with the amount of edges being added and the effect it has on f1 scores to reach an appropriate threshold after which rewiring becomes detrimental (ongoing work).
 
+We only experiment with the GCN and Transformer+LapPE models from the original paper and stick to the PascalVOC dataset due to time and computational constraints. For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. Also, for training of graph models, we switched to using the Cosine learning rate scheduler rather than the default Reduce on Plateau scheduler because of implementation errors we faced on loading the trained checkpoints due to a missing module of the scheduler within torch.
+
 In the table below, we present the F1 scores for the models we trained. Here JK1 denotes the jumping knowledge variant 1 where we concatenate hidden outputs of all layers. And JK2 denotes the jumping knowledge variant where we do maximum pooling of all the layers.
 
 | Model                   | # Params  | Best train F1  | Best val F1 | Best test F1 |
@@ -82,6 +84,8 @@ In the table below, we present the F1 scores for the models we trained. Here JK1
 | E(n)-Equivariant (JK 1) |           |                |             |              |
 | E(n)-Equivariant (JK 2) | 523k      | 0.4613         | 0.2399      | 0.2453       |
 | Transformer+LapPE       | 501k      | 0.8062         | 0.2624      | 0.2610       |
+
+We obtain a test f1 score of ~0.16 on the GCN model and use this as a baseline for comparison. The E(n)-Invariant GNN model achieves a higher f1 score which is again improved by concatinating/max pooling layer outputs. The E(n)-Equivariant GNN model further obtains better f1 scores and concatinating/max pooling the layer outputs does not seem to help in this case. The best results are observed for the Transformer+LapPE model.
 
 (influence score dist)
 
