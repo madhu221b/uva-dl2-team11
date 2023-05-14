@@ -19,28 +19,36 @@ We summarise our main contributions as follows:
 3. To handle the issue of oversmoothing where the values of hidden node converge in deeper layers, we apply some of the "jumping techniques" introduced in [[4]](#4).  Specifically, we apply concatenation and max pooling of all the layers in every forward pass. 
 4. We measure the sensitivity of node x to node y, or the influence of y on x, by measuring how much a change in the input feature of y affects the representation of x in the last layer. This helps us to see how for different models, the influences over short and long graph distances change. We implement the definition of this influence score introduced in Section 3, Definition 3.1 of [[4]](#4).
 5. We analyse the usage of the Cheeger constant [[2]](#2) and minimal average path as "measurements of LRI" in the graph by attempting to find a correlation between the values of these metrics and the level of influence of long-range interactions on different models' prediction.
+We predict that high Cheeger values would correlate with high bottleneck and high average shortest path would correlate with the range of interactions. As the oversquashing problem relates to an interaction between bottlenecking and distance, we predict that models that should perform better under LRI tasks would specifically perform better on
+graphs with high values on both of these metrics.
 
 
 
-| <img width="1246" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9b0c9463-008f-47b7-817a-9a63c796e8a7">    | <img width="739" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/ed650fa6-ec70-4c9f-9594-87bcddc3cff2" id="fig2">	| 
-| -------- | -------- | 
-| Figure 1: E(n)-Invariant and E(n)-Equivariant Architecture    | Figure 2: Rewiring Inference Architecture   | 
+| <img width="1246" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9b0c9463-008f-47b7-817a-9a63c796e8a7">    | <img width="739" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/ed650fa6-ec70-4c9f-9594-87bcddc3cff2" id="fig2"> | <img src="assets/cheeger-median-against-path.png"> | <img src="assets/heat-map-three-values.png">                      | <img src="assets/histogram-graph-values-destribution.png"> | 
+| -------- | -------- |-------------------------------------------------------|--------------------------------------------------------------------------|-----------------------------------------------------------|
+| Figure 1: E(n)-Invariant and E(n)-Equivariant Architecture    | Figure 2: Rewiring Inference Architecture  | Figure 3: Cheeger value against average shortest path | Figure 4: heat map of graph diameter against Cheeger value and average shortest path | Figure 5: Distribution of graphs across the 3 metrics     |  
   
 # Results
 
-In the table below, we present the F1 scores for the models we trained. Here JK1 denotes the jumping knowledge variant 1 where we concatenate hidden outputs of all layers. And JK2 denotes the jumping knowledge variant where we do maximum pooling of all the layers. 
-| Model                   | # Params    | Best train F1 | Best val F1 | Best test F1 |
-| ----------------------- | --- | ------------- | ----------- | ------------ |
-| GCN                     |  496k   | 0.46046       | 0.15339     | 0.1585       |
-| E(n)-Invariant          |  523k   | 0.44664       | 0.21416     | 0.2213       |
-| E(n)-Invariant (JK 1)   |  572k   | 0.38194       | 0.22385     | 0.23597      |
-| E(n)-Invariant (JK 2)   |  523k    | 0.51587       | 0.23583     | 0.23675      |
-| E(n)-Equivariant        |    523k   | 0.3767        | 0.2434      | 0.2516       |
-| E(n)-Equivariant (JK 1) |     |               |             |              |
-| E(n)-Equivariant (JK 2) |     |               |             |              |
-| Transformer+LapPE       |  501k   | 0.8062        | 0.2624      | 0.2610       |
+In the table below, we present the F1 scores for the models we trained. Here JK1 denotes the jumping knowledge variant 1 where we concatenate hidden outputs of all layers. And JK2 denotes the jumping knowledge variant where we do maximum pooling of all the layers.
+
+| Model                   | # Params  | Best train F1  | Best val F1 | Best test F1 |
+|-------------------------|-----------|----------------|-------------|--------------|
+| GCN                     | 496k      | 0.46046        | 0.15339     | 0.1585       |
+| E(n)-Invariant          | 523k      | 0.44664        | 0.21416     | 0.2213       |
+| E(n)-Invariant (JK 1)   | 572k      | 0.38194        | 0.22385     | 0.23597      |
+| E(n)-Invariant (JK 2)   | 523k      | 0.51587        | 0.23583     | 0.23675      |
+| E(n)-Equivariant        | 523k      | 0.3767         | 0.2434      | 0.2516       |
+| E(n)-Equivariant (JK 1) |           |                |             |              |
+| E(n)-Equivariant (JK 2) |           |                |             |              |
+| Transformer+LapPE       | 501k      | 0.8062         | 0.2624      | 0.2610       |
 
 (influence score dist)
+
+We use [Figure 3](#fig3) to select a few graphs from the datasets
+to plot and observe whether they suffer from long range interactions and bottlenecks.
+We would generate a heat map similar to [Figure 4](#fig4) with accuracies instead of diameter per model
+in order to observe the relation between the metrics and the model behaviors.
 # Conclusion
 
 # References
