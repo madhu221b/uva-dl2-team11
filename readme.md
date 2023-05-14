@@ -47,8 +47,8 @@ After training, the model checkpoints could be loaded up directly by providing t
 python src/model_inference.py --cfg src/configs/EGNN/vocsuperpixels-EGNN2.yaml device cuda:0 wandb.use False
 ```
 
-### Calculate Cheeger constant, diameter and shortest path
+### Calculate cheeger constant, diameter and normalized shortest path
 
 ```bash
-python metrices_main.py --cfg configs/GCN/vocsuperpixels-GCN.yaml device cuda:0 wandb.use False
+python src/metrices_main.py --cfg src/configs/GCN/vocsuperpixels-GCN.yaml device cuda:0 wandb.use False
 ```
