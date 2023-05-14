@@ -20,7 +20,7 @@ Message-passing graph neural networks (MP-GNNs) work by aggregating information 
 
 | <img width="1246" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9b0c9463-008f-47b7-817a-9a63c796e8a7">    | <img width="739" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/ed650fa6-ec70-4c9f-9594-87bcddc3cff2">	| 
 | -------- | -------- | 
-| Figure 1: E(n) Invariant and Equivariant Architecture    | Figure 2: Rewiring Inference Architecture   | 
+| Figure 1: E(n)-Invariant and E(n)-Equivariant Architecture    | Figure 2: Rewiring Inference Architecture   | 
   
 # Results
 
@@ -34,9 +34,11 @@ Message-passing graph neural networks (MP-GNNs) work by aggregating information 
 | --------------------- | ------------- | ----------- | ------------ |
 | GCN                   |     0.46046		|    0.15339|   0.1585   |
 | E(n)-Invariant |        0.44664	|  0.21416 | 			0.2213 |
-| E(n)-Invariant  JK 1 |               |             |              |
-| E(n)-Invariant JK 2  |               |             |              |
+| E(n)-Invariant (JK 1) |    0.38194	          |   	0.22385          |      0.23597         |
+| E(n)-Invariant (JK 2)  |      0.51587	       |   0.23583          |       	0.23675         |
 | E(n)-Equivariant  |         0.3767	     |    0.2434         |    	0.2516           |
+| E(n)-Equivariant (JK 1) |              |           |    	          |
+| E(n)-Equivariant (JK 2) |              |           |             |
 | Transformer+LapPE     |     0.8062           |   0.2624           |   0.2610           |
 
 (influence score dist)
