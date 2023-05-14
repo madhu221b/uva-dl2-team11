@@ -68,7 +68,7 @@ Satorras, Victor Garcia et al. “E(n) Equivariant Graph Neural Networks.” Int
 <a id="4">[4]</a>
 Xu, Keyulu et al. “Representation Learning on Graphs with Jumping Knowledge Networks.” International Conference on Machine Learning (2018).
 
-<a id="5">[4]</a>
+<a id="5">[5]</a>
 Brandstetter et al. "Geometric And Physical Quantities Improve E(3) Equivariant Message Passing"
 
 
