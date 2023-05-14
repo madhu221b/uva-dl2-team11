@@ -89,6 +89,12 @@ In the table below, we present the F1 scores for the models we trained. Here JK1
 
 (influence score dist)
 
+## Our metrices
+We compute the average shortest path using the [networkx implementation](https://networkx.org/documentation/networkx-1.3/reference/generated/networkx.average_shortest_path_length.html).
+For the Cheeger metric we use the Cheeger constant inequality to compute the upper and lower bounds of the squared value of the constant and then take the median of these two results[6].
+We do not compute the Cheeger metric directly because of the computational cost of computing the edge boundary.
+
+
 We use [Figure 3](#fig3) to select a few graphs from the datasets
 to plot and observe whether they suffer from long range interactions and bottlenecks.
 We would generate a heat map similar to [Figure 4](#fig4) with accuracies instead of diameter per model
@@ -111,5 +117,6 @@ Xu, Keyulu et al. “Representation Learning on Graphs with Jumping Knowledge Ne
 <a id="5">[5]</a>
 Brandstetter et al. "Geometric And Physical Quantities Improve E(3) Equivariant Message Passing"
 
-
+<a id="6">[6]</a>
+Ravi Montenegro and Prasad Tetali "Mathematical Aspects of Mixing Times in Markov Chains"
 
