@@ -21,6 +21,7 @@ We summarise our main contributions as follows:
 5. We analyse the usage of the Cheeger constant [[2]](#2) and minimal average path as "measurements of LRI" in the graph by attempting to find a correlation between the values of these metrics and the level of influence of long-range interactions on different models' prediction.
 We predict that high Cheeger values would correlate with high bottleneck and high average shortest path would correlate with the range of interactions. As the oversquashing problem relates to an interaction between bottlenecking and distance, we predict that models that should perform better under LRI tasks would specifically perform better on
 graphs with high values on both of these metrics.
+6.Finally advanced  models like Steerable GNN have been used mostly in toy datasets like N-body and QM9. We also extend it to Pascal-SP dataset (Ongoing Work)
 
 
 
