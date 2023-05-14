@@ -81,11 +81,11 @@ In the table below, we present the F1 scores for the models we trained. Here JK1
 | E(n)-Invariant (JK 1)   | 572k      | 0.38194        | 0.22385     | 0.23597      |
 | E(n)-Invariant (JK 2)   | 523k      | 0.51587        | 0.23583     | 0.23675      |
 | E(n)-Equivariant        | 523k      | 0.3767         | 0.2434      | 0.2516       |
-| E(n)-Equivariant (JK 1) |           |                |             |              |
+| E(n)-Equivariant (JK 1) | 572k      | 0.4502         | 0.2431      | 0.2494       |
 | E(n)-Equivariant (JK 2) | 523k      | 0.4613         | 0.2399      | 0.2453       |
 | Transformer+LapPE       | 501k      | 0.8062         | 0.2624      | 0.2610       |
 
-We obtain a test f1 score of ~0.16 on the GCN model and use this as a baseline for comparison. The E(n)-Invariant GNN model achieves a higher f1 score which is again improved by concatinating/max pooling layer outputs. The E(n)-Equivariant GNN model further obtains better f1 scores and concatinating/max pooling the layer outputs does not seem to help in this case. The best results are observed for the Transformer+LapPE model.
+We obtain a test f1 score of ~0.16 on the GCN model and use this as a baseline for comparison. The E(n)-Invariant GNN model achieves a higher f1 score which is again improved by concatinating/max pooling layer outputs. The E(n)-Equivariant GNN model further obtains better f1 scores, but concatinating/max pooling the layer outputs does not seem to help in this case. The best results are observed for the Transformer+LapPE model.
 
 (influence score dist)
 
