@@ -35,11 +35,13 @@ The authors showed that transformer architectures, which ignore the input graph 
 They generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claimed that high values of these statistics indicated LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem.
 
 # Motivation
-( weaknesses/strengths/potential which triggered your group to come up with a response.)
-
+TODO turn these bullet points into sentences
+- We will answer the questions raised in the above discussion to provide a better characterisation of whether these datasets are long range. Specifically we will:
+- Use explainability methods to test whether model performance does depend on the ability to leverage information in distant nodes.
+- Relate the performance of different models to the graph statistics. If these graph statistics do meaningfully 
+- Repeat the above process with statistics that are provably related to oversquashing.  
 
 # Contribution
-(some intro line about motivation....)
 
 We summarise our main contributions as follows:
 1. We apply curvature-based rewiring method -  Stochastic Discrete Ricci Flow (SDRF) algorithm to Pascal SP [[2]](#2). As shown in [Figure 2](#fig2), we rewire the graph and pass it through trained graph models. The aim is to analyse whether rewiring helps to mitigate the problem of oversquashing.  
@@ -87,6 +89,12 @@ In the table below, we present the F1 scores for the models we trained. Here JK1
 
 (influence score dist)
 
+## Our metrices
+We compute the average shortest path using the [networkx implementation](https://networkx.org/documentation/networkx-1.3/reference/generated/networkx.average_shortest_path_length.html).
+For the Cheeger metric we use the Cheeger constant inequality to compute the upper and lower bounds of the squared value of the constant and then take the median of these two results[6].
+We do not compute the Cheeger metric directly because of the computational cost of computing the edge boundary.
+
+
 We use [Figure 3](#fig3) to select a few graphs from the datasets
 to plot and observe whether they suffer from long range interactions and bottlenecks.
 We would generate a heat map similar to [Figure 4](#fig4) with accuracies instead of diameter per model
@@ -109,5 +117,6 @@ Xu, Keyulu et al. “Representation Learning on Graphs with Jumping Knowledge Ne
 <a id="5">[5]</a>
 Brandstetter et al. "Geometric And Physical Quantities Improve E(3) Equivariant Message Passing"
 
-
+<a id="6">[6]</a>
+Ravi Montenegro and Prasad Tetali "Mathematical Aspects of Mixing Times in Markov Chains"
 
