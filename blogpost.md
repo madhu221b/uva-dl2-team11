@@ -28,22 +28,17 @@ We summarise our main contributions as follows:
   
 # Results
 
-(talk about result of ricci flow)
-
-(enn result)
-
-(egnn result)
-
-| Model                 | Best train F1 | Best val F1 | Best test F1 |
-| --------------------- | ------------- | ----------- | ------------ |
-| GCN                   |     0.46046		|    0.15339|   0.1585   |
-| E(n)-Invariant |        0.44664	|  0.21416 | 			0.2213 |
-| E(n)-Invariant (JK 1) |    0.38194	          |   	0.22385          |      0.23597         |
-| E(n)-Invariant (JK 2)  |      0.51587	       |   0.23583          |       	0.23675         |
-| E(n)-Equivariant  |         0.3767	     |    0.2434         |    	0.2516           |
-| E(n)-Equivariant (JK 1) |              |           |    	          |
-| E(n)-Equivariant (JK 2) |              |           |             |
-| Transformer+LapPE     |     0.8062           |   0.2624           |   0.2610           |
+In the table below, we present the F1 scores for the models we trained. 
+| Model                   | # Params    | Best train F1 | Best val F1 | Best test F1 |
+| ----------------------- | --- | ------------- | ----------- | ------------ |
+| GCN                     |  496k   | 0.46046       | 0.15339     | 0.1585       |
+| E(n)-Invariant          |  523k   | 0.44664       | 0.21416     | 0.2213       |
+| E(n)-Invariant (JK 1)   |  572k   | 0.38194       | 0.22385     | 0.23597      |
+| E(n)-Invariant (JK 2)   |  523k    | 0.51587       | 0.23583     | 0.23675      |
+| E(n)-Equivariant        |     | 0.3767        | 0.2434      | 0.2516       |
+| E(n)-Equivariant (JK 1) |     |               |             |              |
+| E(n)-Equivariant (JK 2) |     |               |             |              |
+| Transformer+LapPE       |     | 0.8062        | 0.2624      | 0.2610       |
 
 (influence score dist)
 # Conclusion
