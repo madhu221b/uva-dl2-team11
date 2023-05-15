@@ -61,17 +61,11 @@ TODO
 
 Our project attempted to address the weaknesses we identified each of the above arguments. Our ultimate goals were:
 
-1. to give our reader greater confidence that the long range graph benchmark datasets are characterised by LRI.
-2. to provide a finer characterisation of which LRI factors (e.g. oversquashing or oversmoothing) were important.
+1. To replicate the results of the original study. 
+2. to give our reader greater confidence that the long range graph benchmark datasets are characterised by LRI.
+3. to provide a finer characterisation of which LRI factors (e.g. oversquashing or oversmoothing) were important.
 
 
-
-# 2. Motivation
-TODO turn these bullet points into sentences
-- We will answer the questions raised in the above discussion to provide a better characterisation of whether these datasets are long range. Specifically we will:
-- Use explainability methods to test whether model performance does depend on the ability to leverage information in distant nodes.
-- Relate the performance of different models to the graph statistics. If these graph statistics do meaningfully 
-- Repeat the above process with statistics that are provably related to oversquashing.  
 
 # 3. Contribution
 
