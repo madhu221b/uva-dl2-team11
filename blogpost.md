@@ -1,6 +1,8 @@
 # 1. Introduction
 ## 1.1 Graph Neural Networks
 
+TODO need to reference this section. 
+
 Many neural networks that operate on graphs work within the ‘message passing’ paradigm, where each layer of the network is responsible for aggregating ‘messages’ - functions of the node features - that are passed from a node to its neighbours. Adding depth to the network allows information from more distant nodes to be combined, as each subsequent layer allows information to be passed one edge further than the previous one. This approach is a powerful one: by designing the network to process only local neighbourhoods, we allow weight sharing between all neighborhoods and allow the networks to process graphs with arbitrary sizes and topologies. However, this focus on local information can make it difficult to apply the Message Passing framework when interactions between distant nodes are important. We describe such datasets as exhibiting ‘long range interaction’ (LRI).  Recent work has shown the message passing paradigm can fail in some surprising ways on LRI problems.
 
 First, [[7]](#7) identified ‘over-smoothing’, where adding too many layers to a GNN can cause nearby nodes to have indistinguishable hidden features in the later layers of the network. This occurs because each convolution blurs together the features within a neighbourhood. This is especially an issue in the LRI  case, because a large number of layers is required for messages to reach between nodes that are far apart.
@@ -14,21 +16,55 @@ Many of the papers that propose methods in the LRI space have tested their appro
 
 The Long Range Graph Benchmark [[1]](#1) are a number of datasets that attempt to provide a common framework for testing and benchmarking new LRI methods. Putatively, these are real world datasets with tasks that can only be solved by successfully solving the LRI problem, and so provide an effective test of any new LRI method. There are five datasets in total - we will describe each of these briefly below.
 
-1. PascalVOC-SP: This dataset was derived from the Pascal 2011 image dataset [[8]](#8), which has class labels associated to every pixel. Each image was segmented into superpixels, and the task is to predict the class of the pixel that was originally at the centroid of each pixel. A graph is formed where the nodes correspond to each superpixel, the node features are statistics RGB values within each pixel, and the edges correspond to which superpixels are contiguous in the image. 
-2. COCO-SP: this is similar to PascalVOC-SP, but was derived from the MS COCO dataset [[9]](#9).
-3. PCQM-Contact: This dataset was derived from the PCQM4M [[10]](#10) molecular dataset, where each node is an atom, and the edges correspond to the molecular structure. The task is to predict pairs of nodes that will be less than 3.5 angstroms apart in the final configuration of the molecule. To ensure that only ‘long-range’ predictions are counted, the task is limited to pairs of molecules that are separated by at least 5 hops.
-4 . Peptides-func and Peptides-struct: these are derived from the SATPdb [[11]](#11) dataset of peptides, a class of molecules that is characterised by a large number of nodes and complex structure. While typical peptide datasets use nodes to represent amino acids, the authors instead split these into multiple nodes, each representing individual atoms. In doing so, they imposed extra separation between the graphs. Then they defined two tasks, one a graph-level regression, one a graph-level classification, to predict molecular properties of the graph.
+1. __PascalVOC-SP__: This dataset was derived from the Pascal 2011 image dataset [[8]](#8), which has class labels associated to every pixel. Each image was segmented into superpixels, and the task is to predict the class of the pixel that was originally at the centroid of each pixel. A graph is formed where the nodes correspond to each superpixel, the node features are statistics RGB values within each pixel, and the edges correspond to which superpixels are contiguous in the image. 
+2. __COCO-SP__: this is similar to PascalVOC-SP, but was derived from the MS COCO dataset [[9]](#9).
+3. __PCQM-Contact__: This dataset was derived from the PCQM4M [[10]](#10) molecular dataset, where each node is an atom, and the edges correspond to the molecular structure. The task is to predict pairs of nodes that will be less than 3.5 angstroms apart in the final configuration of the molecule. To ensure that only ‘long-range’ predictions are counted, the task is limited to pairs of molecules that are separated by at least 5 hops.
+4. __Peptides-func__ and __Peptides-struct__: these are derived from the SATPdb [[11]](#11) dataset of peptides, a class of molecules that is characterised by a large number of nodes and complex structure. While typical peptide datasets use nodes to represent amino acids, the authors instead split these into multiple nodes, each representing individual atoms. In doing so, they imposed extra separation between the graphs. Then they defined two tasks, one a graph-level regression, one a graph-level classification, to predict molecular properties of the graph.
 
 
 ## Are these truly ‘long range’ benchmarks?
 
-The central claim of the paper is that the above datasets provide a benchmark for assessing whether a new method is capable of testing new LRI methods. In this section, we describe the arguments that the authors make in support of this claim, and discuss their strengths and weaknesses.
+The central claim of the paper is that the above datasets provide a benchmark for assessing whether a new method solves the LRI problem.
+In this section, we describe the arguments that the authors make in support of this claim, and discuss their strengths and weaknesses.
+
+TODO add a bit more here about what a good benchmark should look like.
  
-In the case of one dataset -  PCQM-Contact - the task was explicitly constructed to require long range interactions. In our view, this is an effective way of ensuring that the task is LRI dependent, but we note that it doesn’t apply for 4 out of 5 datasets.
 
-The authors showed that transformer architectures, which ignore the input graph in favour of a fully connected one, outperformed all other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance. Arguably, we should look for more direct evidence that the transformers were capable of leveraging long range interactions to improve performance.
+### LRI by Construction
 
-They generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claimed that high values of these statistics indicated LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem.
+The authors argue that they construct their datasets in such a way that acheiving good performance on them requires solving the LRI problem. In one cases, this is convincing: the PCQM contact dataset only considers interactions between distant nodes, and so cannot be solved by local information alone.
+
+In the other cases, the justification is murkier. For example, they argue that classifying superpixels in the COCO and Pascal datasets is inherently long range, but they provide no argument for why this is the case.
+
+Similarly, they argue that because 3D folding structure is important in determining peptide properties, and because 3D structures determine . However, it's not clear whether how this dependence on 3D geometry can be understood in terms of over-squashing and over-smoothing, which have only been characterised as dependent on the graph topology. 
+
+In summary, there isn't a strong _a priori_ reason to believe that any of the datasets are characterised by LRI, except for PCQM.
+
+### Relative outperformance of transformer methods
+
+The authors showed that transformer architectures, which ignore the input graph in favour of a fully connected one, outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance. 
+
+TODO check whether expressivity this was also reflected in generalisation statistics.
+
+Arguably, we should look for more direct evidence that improved performance was due to an ability to leverage long range information.
+
+
+### Graph statistics
+The authors generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claimed that high values of these statistics indicated LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem. For example, a graph may have a large number of nodes, but a task defined on that graph may be totally solvable without considering interactions between them.
+
+
+### Importance of Positional Encodings
+TODO
+
+
+### Our Paper
+
+Our project attempted to address the weaknesses we identified each of the above arguments. Our ultimate goals were:
+
+1. to give our reader greater confidence that the long range graph benchmark datasets are characterised by LRI.
+2. to provide a finer characterisation of which LRI factors (e.g. oversquashing or oversmoothing) were important.
+
+
 
 # 2. Motivation
 TODO turn these bullet points into sentences
