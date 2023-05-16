@@ -50,11 +50,7 @@ Arguably, we should look for more direct evidence that improved performance was 
 
 
 ### Graph statistics
-The authors generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claimed that high values of these statistics indicated LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem. A graph may have a large number of nodes, and a complex topology, but it doesn't follow that a task defined on that graph can only be solved by modelling global interactions. For example, consider the case where our task is to calculate the sum of the hidden features in nodes - this isn't dependent on graph topology.
-
-Therefore, we think these graph statistics need to be more directly linked with model performance before we can conclude that they are proof of LRI in the datasets.
-
- 
+The authors generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claimed that high values of these statistics indicated LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem. For example, a graph may have a large number of nodes, but a task defined on that graph may be totally solvable without considering interactions between them.
 
 
 ### Importance of Positional Encodings
@@ -66,46 +62,12 @@ TODO
 Our project attempted to address the weaknesses we identified each of the above arguments. Our ultimate goals were:
 
 1. To replicate the results of the original study. 
-2. to give our reader greater confidence that these datasets are a suitable benchmark for LRI methods, in the sense that improvements on these benchmarks can be attributed to an increased ability to solve the LRI problem.
-3. to provide a better characterisation of which LRI factors (e.g. oversquashing or oversmoothing) were important.
-
-Because we had limited computational resources, we chose to focus on the Pascal dataset. Because this is a node classification dataset, it allows us to investigate long range interactions in ways that are impossible for graph level tasks.
-
-# 3. Experiments
-
-### Which models perform best on the Pascal Dataset?
-
-We began by training a number of models on the Pascal VOC dataset. This both replicated the original models, and gave us access to a set of models that we could use to test hypotheses about the presence of LRI in the dataset.
-
-As with the original study, we found that a transformer architecture performed better than all other models. However, we also tested a variety of MPNN models that explicitly encoded geometric information. We felt that these were a 'fairer' test of the capacity of a message passing network, because the geometric relationship between two nodes is more semantically meaningful than the one imposed by the arbitrary topology of the superpixel boundary graph. We found that these models gave comparable performance  to the transformer, even with as few as two message passing layers.
-
-A brief description of the models, and their performance, is given below:
-
-
-#TODO need to format this better. Remove # params in favour of number of layers. Change to 2 s.f. Colour code.
-# TODO add column describing models?
-    | Model                   | # Params  | Best train F1  | Best val F1 | Best test F1 |
-|-------------------------|-----------|----------------|-------------|--------------|
-| GCN                     | 496k      | 0.46046        | 0.15339     | 0.1585       |
-| E(n)-Invariant          | 523k      | 0.44664        | 0.21416     | 0.2213       |
-| E(n)-Invariant (JK 1)   | 572k      | 0.38194        | 0.22385     | 0.23597      |
-| E(n)-Invariant (JK 2)   | 523k      | 0.51587        | 0.23583     | 0.23675      |
-| E(n)-Equivariant        | 523k      | 0.3767         | 0.2434      | 0.2516       |
-| E(n)-Equivariant (JK 1) | 572k      | 0.4502         | 0.2431      | 0.2494       |
-| E(n)-Equivariant (JK 2) | 523k      | 0.4613         | 0.2399      | 0.2453       |
-| Transformer+LapPE       | 501k      | 0.8062         | 0.2624      | 0.2610       |
-
-Recall that our original purpose was 
-
-### Is performance correlated with increased importance of distant nodes
-
-Recall that our original 
+2. to give our reader greater confidence that the long range graph benchmark datasets are characterised by LRI.
+3. to provide a finer characterisation of which LRI factors (e.g. oversquashing or oversmoothing) were important.
 
 
 
-
-
-
+# 3. Contribution
 
 We summarise our main contributions as follows:
 1. We apply curvature-based rewiring method -  Stochastic Discrete Ricci Flow (SDRF) algorithm to Pascal SP [[2]](#2). As shown in [Figure 2](#fig2), we rewire the graph and pass it through trained graph models. The aim is to analyse whether rewiring helps to mitigate the problem of oversquashing.  
