@@ -54,8 +54,6 @@ The authors generated statistics characterising the graphs found in each dataset
 
 Therefore, we think these graph statistics need to be more directly linked with model performance before we can conclude that they are proof of LRI in the datasets.
 
- 
-
 
 ### Importance of Positional Encodings
 TODO
@@ -75,7 +73,9 @@ Because we had limited computational resources, we chose to focus on the Pascal 
 
 ### Which models perform best on the Pascal Dataset?
 
-We began by training a number of models on the Pascal VOC dataset. This both replicated the original models, and gave us access to a set of models that we could use to test hypotheses about the presence of LRI in the dataset.
+We began by training a number of models on the Pascal VOC dataset. This both replicated the original models, and gave us access to a set of models that we could use to test hypotheses about the presence of LRI in the dataset. 
+
+For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. We also deviate from the original paper in using a cosine learning rate scheduler rather than the default 'reduce on plateau' scheduler, becaused we faced compatibility issues when using the latter. This does not affect our results substantively, but accounts for minor differences between our results and the original paper.
 
 As with the original study, we found that a transformer architecture performed better than all other models. However, we also tested a variety of MPNN models that explicitly encoded geometric information. We felt that these were a 'fairer' test of the capacity of a message passing network, because the geometric relationship between two nodes is more semantically meaningful than the one imposed by the arbitrary topology of the superpixel boundary graph. We found that these models gave comparable performance  to the transformer, even with as few as two message passing layers.
 
@@ -112,9 +112,9 @@ __#TODO__ - Madhura/Avik can you guys double check I have this right?
 
 $$ | \frac{\delta \sum_i y_u^{(i)}{\delta }  | h_v^{(0)} | $$
 
-Where the individual gradients are obtained empirically through the Pytorch autograd sytem.
+Where the individual gradients are obtained empirically through the Pytorch autograd system.
 
-To ensure that we could compare influence scores between models, we normalised the scores for each target node across all other nodes. That is, let $I(u, v)$ be the influence of $v$ on node $u$, we computed the normalised influence score as:
+To ensure that we could compare influence scores between models, we normalised the scores for each target node across all other nodes. That is, leting $I(u, v)$ be the influence of $v$ on node $u$, we computed the normalised influence score as:
 
 $$ \tilde{I}(u, v) = \frac{I(u, v)}{\sum_i I(u, v_i)} $$
 
@@ -124,15 +124,30 @@ Preliminary results:
 ![img.png](preliminary_results_influence.png)
 
 
-### Does model performance correlate with graph statistics?
+### Does model performance correlate with graph qualities that predict over-squashing?
 
-Since we 
+Recall that the original LRGB paper claimed that their datasets were good benchmarks for LRI based on the qualities of the graphs they contained. While these qualities are linked to graph topology, it's not clear they capture  properties that are relevant to the LRI problem. Even if they do, it's not clear what is an objectively 'high' value for each of these statistics.
+
+We hypothesised that if these statistics were indicative of the presence of long range interactions in the dataset, then we would be able to correlate them with the relative performance of different models. For example, because transformers are less susceptible to over-squashing than GCNs, we expected that they should outperform GCNs on tasks with high values of each statistic.
+
+We also investigated other ways to quantify graph topology, drawing on recent theoretical work relating over-squashing to spectral graph theory. (REF) showed that a value called the 'Cheeger constant' characterised how serious the worst bottleneck induced by a graph topology is - although infeasible to compute in practice, it can be approximated by the eigenvalues of the graph Laplacian. TODO - a bit more detail here if we have space - would be nice to put the definitions in.
+
+
+
+
+TODO I think we may need to do an extra experiment here. The issue is that we don't control for the fact that the transformer gets to see additional information that the GCN doesn't. I think what we should do is compare GCN and a 'sub-transformer', which is basically the GCN, but it replaces the graph for each node classification with a fully connected subgraph over the nodes that the GCN can see. Might be tricky to train?
+TODO additionally, we might also just vary the message passing capacity of a single network, since this is an other way of controlling for oversquashing. This is a bit easier since just vary 'dim inner' and rerun.
+
 
 ### Does rewiring the graph to remove bottlenecks improve performance?
 
+Plan:
+* can prove that oversquashing is a problem based on the application of a problem that is designed to fix oversquashing.
 
 ## Conclusions
 
+Plan:
+* Go through which experiments indicated that there was LRI in the data.
 
 
 
@@ -214,7 +229,12 @@ To summarise, we have an initial brief results and working code modules now. Wha
 
 Note: You might notice some gaps within the blogpost. This is because we do not have all results yet and the work is in progress. We hope to submit our notebook with final results during the main submission since our results and data are scattered and getting generated too. 
 
-# References
+
+# 5. Individual Contributions
+
+
+
+# 6. References
 <a id="1">[1]</a> 
 Dwivedi, Vijay Prakash et al. “Long Range Graph Benchmark.” ArXiv abs/2206.08164 (2022): n. pag.
 
