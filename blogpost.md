@@ -108,21 +108,25 @@ If the Pascal dataset was truly characterised by LRI, we should expect two thing
 
 To test these hypotheses, we used __influence functions__ (REF) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
 
-TODO - Madhura/Avik can you guys double check I have this right? 
+__#TODO__ - Madhura/Avik can you guys double check I have this right?
 
 $$ | \frac{\delta \sum_i y_u^{(i)}{\delta }  | h_v^{(0)} | $$
 
 Where the individual gradients are obtained empirically through the Pytorch autograd sytem.
 
-To ensure that we could compare influence scores between models, we normalised the scores for each source node across all targets. That is, let $I(u, v)$ be the , we computed the normalised influence score as:
+To ensure that we could compare influence scores between models, we normalised the scores for each target node across all other nodes. That is, let $I(u, v)$ be the influence of $v$ on node $u$, we computed the normalised influence score as:
 
 $$ \tilde{I}(u, v) = \frac{I(u, v)}{\sum_i I(u, v_i)} $$
 
-Because influence scores are dimensionless, we normalised them so that they could be compared across different models
-
 TODO graph and discussion of results once we get the final influence scores
 
+Preliminary results:
+![img.png](preliminary_results_influence.png)
+
+
 ### Does model performance correlate with graph statistics?
+
+Since we 
 
 ### Does rewiring the graph to remove bottlenecks improve performance?
 
