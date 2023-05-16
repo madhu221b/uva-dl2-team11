@@ -5,7 +5,7 @@ Many neural networks that operate on graphs work within the ‘message passing�
 
 First, [[7]](#7) identified ‘over-smoothing’, where adding too many layers to a GNN can cause nearby nodes to have indistinguishable hidden features in the later layers of the network. This occurs because each convolution blurs together the features within a neighbourhood. This is especially an issue in the LRI  case, because a large number of layers is required for messages to reach between nodes that are far apart.
 
-Second, [[12]](#2) identified ‘over-squashing’, where the graph topology induces bottlenecks that prevent the flow of information between different parts of the graph. Because each message in a Message Passing Neural Network (MP-NN) has a fixed capacity, nodes with many neighbours may not be able to pass on all the useful information that they have access to. LRI tasks should therefore be harder to solve in topologies that have strict bottlenecks, because essential information is more likely to be lost while passing from node to node.
+Second, [[12]](#12) identified ‘over-squashing’, where the graph topology induces bottlenecks that prevent the flow of information between different parts of the graph. Because each message in a Message Passing Neural Network (MP-NN) has a fixed capacity, nodes with many neighbours may not be able to pass on all the useful information that they have access to. LRI tasks should therefore be harder to solve in topologies that have strict bottlenecks, because essential information is more likely to be lost while passing from node to node.
 
 
 ## 1.2 The Long Range Graph Benchmark
