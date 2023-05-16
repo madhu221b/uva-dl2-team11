@@ -102,13 +102,20 @@ TDOO more discussion of the JK models? These are interesting because they are ex
 
 If the Pascal dataset was truly characterised by LRI, we should expect two things:
 - for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
-- for MPNN architectures that can't 
+- for MPNN architectures that can't make use of interactions, we expect that
 
-To measure this quantitatively, we computed the importance
+To test these hypotheses, we used __influence functions__ (REF) to quantify the importance of nodes at different. Briefly, the influence function is defined as
 
-### 
+We additionally 
 
-### Does rewiring the graph to remove bottlenecks improve performance.
+### Does model performance correlate with graph statistics?
+
+### Does rewiring the graph to remove bottlenecks improve performance?
+
+
+## Conclusions
+
+
 
 
 
