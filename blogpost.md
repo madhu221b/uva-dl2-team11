@@ -81,9 +81,8 @@ As with the original study, we found that a transformer architecture performed b
 
 A brief description of the models, and their performance, is given below:
 
-
 #TODO need to format this better. Remove # params in favour of number of layers. Change to 2 s.f. Colour code.
-# TODO add column describing models?
+#TODO add column describing models?
     | Model                   | # Params  | Best train F1  | Best val F1 | Best test F1 |
 |-------------------------|-----------|----------------|-------------|--------------|
 | GCN                     | 496k      | 0.46046        | 0.15339     | 0.1585       |
@@ -95,11 +94,23 @@ A brief description of the models, and their performance, is given below:
 | E(n)-Equivariant (JK 2) | 523k      | 0.4613         | 0.2399      | 0.2453       |
 | Transformer+LapPE       | 501k      | 0.8062         | 0.2624      | 0.2610       |
 
-Recall that our original purpose was 
+Recall that our second goal above was to see whether improvements on the LRGB were caused by an improved ability to model long range interactions. From this point of view, these results are worrisome, because we found that a model that could only use local information - which is by definition not capable of modelling LRI - was nearly as performant as one that could model interactions between all nodes.
+
+TDOO more discussion of the JK models? These are interesting because they are explicitly done to help oversmoothing.
 
 ### Is performance correlated with increased importance of distant nodes
 
-Recall that our original 
+If the Pascal dataset was truly characterised by LRI, we should expect two things:
+- for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
+- for MPNN architectures that can't 
+
+To measure this quantitatively, we computed the importance
+
+### 
+
+### Does rewiring the graph to remove bottlenecks improve performance.
+
+
 
 
 
