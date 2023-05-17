@@ -75,7 +75,7 @@ Because we had limited computational resources, we chose to focus on the Pascal 
 
 We began by training a number of models on the Pascal VOC dataset. This both replicated the original models, and gave us access to a set of models that we could use to test hypotheses about the presence of LRI in the dataset. 
 
-For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. We also deviate from the original paper in using a cosine learning rate scheduler rather than the default 'reduce on plateau' scheduler, becaused we faced compatibility issues when using the latter. This does not affect our results substantively, but accounts for minor differences between our results and the original paper.
+For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. We also deviate from the original paper in using a cosine learning rate scheduler rather than the default 'reduce on plateau' scheduler, because we faced compatibility issues when using the latter. This does not affect our results substantively, but accounts for minor differences between our results and the original paper.
 
 As with the original study, we found that a transformer architecture performed better than all other models. However, we also tested a variety of MPNN models that explicitly encoded geometric information. We felt that these were a 'fairer' test of the capacity of a message passing network, because the geometric relationship between two nodes is more semantically meaningful than the one imposed by the arbitrary topology of the superpixel boundary graph. We found that these models gave comparable performance  to the transformer, even with as few as two message passing layers.
 
@@ -122,9 +122,8 @@ Recall that the original LRGB paper claimed that their datasets were good benchm
 
 We hypothesised that if these statistics were indicative of the presence of long range interactions in the dataset, then we would be able to correlate them with the relative performance of different models. For example, because transformers are less susceptible to over-squashing than GCNs, we expected that they should outperform GCNs on tasks with high values of each statistic.
 
-We also investigated other ways to quantify graph topology, drawing on recent theoretical work relating over-squashing to spectral graph theory. (REF) showed that a value called the 'Cheeger constant' characterised how serious the worst bottleneck induced by a graph topology is - although infeasible to compute in practice, it can be approximated by the eigenvalues of the graph Laplacian. TODO - a bit more detail here if we have space - would be nice to put the definitions in.
-
-
+We also investigated other ways to quantify graph topology, drawing on recent theoretical work relating over-squashing to spectral graph theory. (REF) showed that a value called the 'Cheeger constant' characterised how serious the worst bottleneck induced by a graph topology is - although infeasible to compute in practice, it can be approximated by the eigenvalues of the graph Laplacian. 
+__TODO__ - a bit more detail here if we have space - would be nice to put the definitions in.
 
 
 TODO I think we may need to do an extra experiment here. The issue is that we don't control for the fact that the transformer gets to see additional information that the GCN doesn't. I think what we should do is compare GCN and a 'sub-transformer', which is basically the GCN, but it replaces the graph for each node classification with a fully connected subgraph over the nodes that the GCN can see. Might be tricky to train?
