@@ -81,19 +81,10 @@ As with the original study, we found that a transformer architecture performed b
 
 A brief description of the models, and their performance, is given below:
 
-#TODO need to format this better. Remove # params in favour of number of layers. Change to 2 s.f. Colour code.
+# TODO add number of layers column
 #TODO add column describing models?
 
-| Model                   | # Params  | Best train F1  | Best val F1 | Best test F1 |
-|-------------------------|-----------|----------------|-------------|--------------|
-| GCN                     | 496k      | 0.46046        | 0.15339     | 0.1585       |
-| E(n)-Invariant          | 523k      | 0.44664        | 0.21416     | 0.2213       |
-| E(n)-Invariant (JK 1)   | 572k      | 0.38194        | 0.22385     | 0.23597      |
-| E(n)-Invariant (JK 2)   | 523k      | 0.51587        | 0.23583     | 0.23675      |
-| E(n)-Equivariant        | 523k      | 0.3767         | 0.2434      | 0.2516       |
-| E(n)-Equivariant (JK 1) | 572k      | 0.4502         | 0.2431      | 0.2494       |
-| E(n)-Equivariant (JK 2) | 523k      | 0.4613         | 0.2399      | 0.2453       |
-| Transformer+LapPE       | 501k      | 0.8062         | 0.2624      | 0.2610       |
+![img.png](assets/summarised_data/model_summary.png)
 
 Recall that our second goal above was to see whether improvements on the LRGB were caused by an improved ability to model long range interactions. From this point of view, these results are worrisome, because we found that a model that could only use local information - which is by definition not capable of modelling LRI - was nearly as performant as one that could model interactions between all nodes.
 
