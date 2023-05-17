@@ -83,7 +83,8 @@ A brief description of the models, and their performance, is given below:
 
 #TODO need to format this better. Remove # params in favour of number of layers. Change to 2 s.f. Colour code.
 #TODO add column describing models?
-    | Model                   | # Params  | Best train F1  | Best val F1 | Best test F1 |
+
+| Model                   | # Params  | Best train F1  | Best val F1 | Best test F1 |
 |-------------------------|-----------|----------------|-------------|--------------|
 | GCN                     | 496k      | 0.46046        | 0.15339     | 0.1585       |
 | E(n)-Invariant          | 523k      | 0.44664        | 0.21416     | 0.2213       |
