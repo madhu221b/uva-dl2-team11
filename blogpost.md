@@ -125,6 +125,12 @@ We hypothesised that if these statistics were indicative of the presence of long
 We also investigated other ways to quantify graph topology, drawing on recent theoretical work relating over-squashing to spectral graph theory. (REF) showed that a value called the 'Cheeger constant' characterised how serious the worst bottleneck induced by a graph topology is - although infeasible to compute in practice, it can be approximated by the eigenvalues of the graph Laplacian. 
 __TODO__ - a bit more detail here if we have space - would be nice to put the definitions in.
 
+More formally, the Cheeger constant of a graph G is defined as:
+
+
+
+
+
 
 TODO I think we may need to do an extra experiment here. The issue is that we don't control for the fact that the transformer gets to see additional information that the GCN doesn't. I think what we should do is compare GCN and a 'sub-transformer', which is basically the GCN, but it replaces the graph for each node classification with a fully connected subgraph over the nodes that the GCN can see. Might be tricky to train?
 TODO additionally, we might also just vary the message passing capacity of a single network, since this is an other way of controlling for oversquashing. This is a bit easier since just vary 'dim inner' and rerun.
@@ -143,82 +149,6 @@ Plan:
 
 
 
-
-
-
-
-
-
-We summarise our main contributions as follows:
-1. We apply curvature-based rewiring method -  Stochastic Discrete Ricci Flow (SDRF) algorithm to Pascal SP [[2]](#2). As shown in [Figure 2](#fig2), we rewire the graph and pass it through trained graph models. The aim is to analyse whether rewiring helps to mitigate the problem of oversquashing.  
-2. Pascal-SP dataset has node embedding of size 14 where the first 12 features are related to the color of the node and the last 2 features are related to its x,y position. We separate the feature embedding into node embedding and coordinate embedding, to incorporate type-0 representations (i.e. relative distances between the nodes). We do this, inorder to see whether considering geometrical representations of the nodes can help with oversquashing. We implement E(n)-invariant and E(n)-equivariant graph networks [[3]](#3) to see whether these 2 variants of translation equivariance architectures help to handle oversquashing. [Figure 1](#fig1) presents an overview of the architectures used. 
-3. To handle the issue of oversmoothing where the values of hidden node converge in deeper layers, we apply some of the "jumping techniques" introduced in [[4]](#4).  Specifically, we apply concatenation and max pooling of all the layers in every forward pass. 
-4. We measure the sensitivity of node x to node y, or the influence of y on x, by measuring how much a change in the input feature of y affects the representation of x in the last layer. This helps us to see how for different models, the influences over short and long graph distances change. We implement the definition of this influence score introduced in Section 3, Definition 3.1 of [[4]](#4).
-5. We analyse the usage of the Cheeger constant [[2]](#2) and minimal average path as "measurements of LRI" in the graph by attempting to find a correlation between the values of these metrics and the level of influence of long-range interactions on different models' prediction.
-We predict that high Cheeger values would correlate with high bottleneck and high average shortest path would correlate with the range of interactions. As the oversquashing problem relates to an interaction between bottlenecking and distance, we predict that models that should perform better under LRI tasks would specifically perform better on
-graphs with high values on both of these metrics.
-6. Finally advanced  models like Steerable GNN [[5]](#5) have been used mostly in toy datasets like N-body and QM9. We experiment this with Pascal-SP to verify whether steerable messages improve upon the above mentioned trivial equivariant graph networks that send invariant messages. Ideally we expect this message passing approach, should be maximally expressive due to E(3) equivariance. (This is an ongoing Work)
-
-
-As part of contribution #5, we compute the average shortest path using the [networkx implementation](https://networkx.org/documentation/networkx-1.3/reference/generated/networkx.average_shortest_path_length.html).
-For the Cheeger metric we use the Cheeger constant inequality to compute the upper and lower bounds of the squared value of the constant and then take the median of these two results[6].
-We do not compute the Cheeger metric directly because of the computational cost of computing the edge boundary.
-
-
-
-
-| <img width="1246" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9b0c9463-008f-47b7-817a-9a63c796e8a7" id="fig1">    | <img width="739" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/ed650fa6-ec70-4c9f-9594-87bcddc3cff2" id="fig2"> | 
-| -------- | -------- |
-| Figure 1: E(n)-Invariant and E(n)-Equivariant Architecture    | Figure 2: Rewiring Inference Architecture  |  
-  
-  | <img src="assets/cheeger-median-against-path.png"> | <img src="assets/heat-map-three-values.png"> | <img src="assets/histogram-graph-values-destribution.png"> |
- | -------------------------------------------|-------------------------------|-----------------------------------------------------------|
- | Figure 3: Cheeger value against average shortest path | Figure 4: Heat Map of graph diameter against Cheeger value and average shortest path | Figure 5: Distribution of graphs across the 3 metrics |
-# Results
-
-Applying SDRF rewiring to the graphs of Pascal dataset and then training the Transformer+LapPE model gives an improved performance as shown in the table below. We are working on applying the same for other models.
-
-| No. of edge additions | Best test F1 |
-| ------------------- | ------------ |
-| 0 (original graphs) | 0.261        |
-| 10                  | 0.2757       |
-| 20                  | 0.2635       |
-
-We see an increase in f1 scores on adding 10 edges to every graph, but we also see a decrease in score on adding 20 edges. It would be interesting to experiment with the amount of edges being added and the effect it has on f1 scores to reach an appropriate threshold after which rewiring becomes detrimental (ongoing work).
-
-We only experiment with the GCN and Transformer+LapPE models from the original paper and stick to the PascalVOC dataset due to time and computational constraints. For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. Also, for training of graph models, we switched to using the Cosine learning rate scheduler rather than the default Reduce on Plateau scheduler because of implementation errors we faced on loading the trained checkpoints due to a missing module of the scheduler within torch.
-
-In the table below, we present the F1 scores for the models we trained. Here JK1 denotes the jumping knowledge variant 1 where we concatenate hidden outputs of all layers. And JK2 denotes the jumping knowledge variant where we do maximum pooling of all the layers.
-
-| Model                   | # Params  | Best train F1  | Best val F1 | Best test F1 |
-|-------------------------|-----------|----------------|-------------|--------------|
-| GCN                     | 496k      | 0.46046        | 0.15339     | 0.1585       |
-| E(n)-Invariant          | 523k      | 0.44664        | 0.21416     | 0.2213       |
-| E(n)-Invariant (JK 1)   | 572k      | 0.38194        | 0.22385     | 0.23597      |
-| E(n)-Invariant (JK 2)   | 523k      | 0.51587        | 0.23583     | 0.23675      |
-| E(n)-Equivariant        | 523k      | 0.3767         | 0.2434      | 0.2516       |
-| E(n)-Equivariant (JK 1) | 572k      | 0.4502         | 0.2431      | 0.2494       |
-| E(n)-Equivariant (JK 2) | 523k      | 0.4613         | 0.2399      | 0.2453       |
-| Transformer+LapPE       | 501k      | 0.8062         | 0.2624      | 0.2610       |
-
-We obtain a test f1 score of ~0.16 on the GCN model and use this as a baseline for comparison. The E(n)-Invariant GNN model achieves a higher f1 score which is again improved by concatinating/max pooling layer outputs. The E(n)-Equivariant GNN model further obtains better f1 scores, but concatinating/max pooling the layer outputs does not seem to help in this case. The best results are observed for the Transformer+LapPE model.
-
-Results of Influence Score Distribution: Not Available. We have implemented the function for it but we are still debugging and ensuring that it works right but the result would look something like this: 
-
-<img width="584" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/0e9574c5-4068-4143-b5f7-28546e77b0a1">
-
-This was for E(n)-invariant model and we see how the score differs with the distance. 
-
-We plot [Figure 3](#fig3) by selecting a few graphs from the datasets and observe whether they suffer from long range interactions and bottlenecks. We also generate a heat map similar to [Figure 4](#fig4) with diameter per model
-in order to observe the relation between the metrics and the model behaviors. This is just an initial introductory visualization of these metrics. We plan to compare these metrics with the F1-scores generated for various models we discussed in the table above. 
-
-# 4. Conclusion
-To conclude, we see quite promising results by using invariant and equivariant graph neural networks. What we are investigating currently is whether this improvement over GCN is due to the ability of these architectures to model Long Range Interactions more effectively. We hope to gain insight regarding this by comparing the aforementioned metrics wrt the F1 scores of models for every graph. 
-We also wish to do a more drilled-down analysis of rewiring of graphs and how it affects the performance of the models during inference. Furthermore, we plan to also incorporate steerable GCN to see whether adding more higher representations help us to model LRIs. We also plan to analyse the influence scores of nodes wrt distant nodes generated by various models, to see how sensitive the nodes are to changes in each other’s representations.
-To summarise, we have an initial brief results and working code modules now. What remains for us is to dive deep down on analyzing if long range interactions are really and truly modeled by the various alternative approaches we employ by using the various metrics we introduce. 
-
-
-Note: You might notice some gaps within the blogpost. This is because we do not have all results yet and the work is in progress. We hope to submit our notebook with final results during the main submission since our results and data are scattered and getting generated too. 
 
 
 # 5. Individual Contributions
