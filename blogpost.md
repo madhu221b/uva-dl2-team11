@@ -118,14 +118,29 @@ Preliminary results:
 
 ### Does model performance correlate with graph qualities that predict over-squashing?
 
-Recall that the original LRGB paper claimed that their datasets were good benchmarks for LRI based on the qualities of the graphs they contained. While these qualities are linked to graph topology, it's not clear they capture  properties that are relevant to the LRI problem. Even if they do, it's not clear what is an objectively 'high' value for each of these statistics.
+Recall that the original LRGB paper claimed that their datasets were good benchmarks for LRI based on three statistics of the graphs they contained: the average shortest path distance between nodes in the graph, the graph diameter, and the number of nodes. 
 
 We hypothesised that if these statistics were indicative of the presence of long range interactions in the dataset, then we would be able to correlate them with the relative performance of different models. For example, because transformers are less susceptible to over-squashing than GCNs, we expected that they should outperform GCNs on tasks with high values of each statistic.
 
-We also investigated other ways to quantify graph topology, drawing on recent theoretical work relating over-squashing to spectral graph theory. (REF) showed that a value called the 'Cheeger constant' characterised how serious the worst bottleneck induced by a graph topology is - although infeasible to compute in practice, it can be approximated by the eigenvalues of the graph Laplacian. 
-__TODO__ - a bit more detail here if we have space - would be nice to put the definitions in.
+While it's not clear that the statistics we mentioned are related to over-squashing, we also investigated an alternative statistic that has a stronger theoretical relationship with over-squashing.
 
-More formally, the Cheeger constant of a graph G is defined as:
+Recently (REF) has shown that the degree of over-squashing can be measured by spectral properties of a graph. The Cheeger constant $h_G$ of a graph G is defined as:
+
+$$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{|\delta S |}{\min vol(S), vol(V/S)}$$
+
+where the _boundary_  $|\delta S |$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with empty intersection, $S$ and $V\S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets.
+
+(REF) showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that in turn controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$ (REF). 
+
+In summary, we expect that graphs with low  values are a theoretically well grounded indicator of over-squashing in the graph.
+
+#### Results
+
+
+
+
+
+
 
 
 
