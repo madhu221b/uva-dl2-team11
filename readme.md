@@ -14,7 +14,9 @@ conda activate lrgb
 pip install torch torchvision torchaudio
 pip install torch_geometric==2.0.2 performer-pytorch torchmetrics==0.7.2
 pip install ogb wandb pytorch_lightning yacs 
-pip install torch_scatter torch_sparse tensorboardX
+pip install torch_scatter torch_sparse 
+pip install tensorboardX
+pip install numba
 ```
 
 ### Training the Graph models
