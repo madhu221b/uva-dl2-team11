@@ -27,11 +27,11 @@ The Long Range Graph Benchmark [[1]](#1) are a number of datasets that attempt t
 ## Are these truly ‘long range’ benchmarks?
 
 The central claim of the paper is that the above datasets provide a benchmark for assessing whether a new method solves the LRI problem. While the paper doesn't explicitly describe what makes for a good benchmark, we believe the datasets should satisfy these criteria:
-* 
+1. At least one of the three factors that we described as characterising LRI, under-reaching, over-smoothing and over-squashing, should be present in the dataset.
+2. The majority of improvements in model performance on the benchmark should come from solving one of the above problems.
 
-In this section, we describe the arguments that the authors make in support of this claim, and discuss their strengths and weaknesses.
 
-TODO add a bit more here about what a good benchmark should look like.
+In this section, we describe the arguments that the authors make in support of their claim, and discuss their strengths and weaknesses.
  
 
 ### LRI by Construction
@@ -46,8 +46,7 @@ In summary, there isn't a strong _a priori_ reason to believe that any of the da
 
 ### Relative outperformance of transformer methods
 
-The authors showed that transformer architectures, which ignore the input graph in favour of a fully connected one, outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance. 
-
+The authors showed that transformer architectures, which ignore the input graph in favour of a fully connected one, outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance.
 
 Arguably, we should look for more direct evidence that improved performance was due to an ability to leverage long range information.
 
@@ -56,10 +55,6 @@ Arguably, we should look for more direct evidence that improved performance was 
 The authors generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claimed that high values of these statistics indicated LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem. A graph may have a large number of nodes, and a complex topology, but it doesn't follow that a task defined on that graph can only be solved by modelling global interactions. For example, consider the case where our task is to calculate the sum of the hidden features in nodes - this isn't dependent on graph topology.
 
 Therefore, we think these graph statistics need to be more directly linked with model performance before we can conclude that they are proof of LRI in the datasets.
-
-
-### Importance of Positional Encodings
-TODO
 
 
 ### Our Paper
