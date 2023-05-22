@@ -5,9 +5,11 @@ TODO need to reference this section.
 
 Many neural networks that operate on graphs work within the ‘message passing’ paradigm, where each layer of the network is responsible for aggregating ‘messages’ - functions of the node features - that are passed from a node to its neighbours. Adding depth to the network allows information from more distant nodes to be combined, as each subsequent layer allows information to be passed one edge further than the previous one. This approach is a powerful one: by designing the network to process only local neighbourhoods, we allow weight sharing between all neighborhoods and allow the networks to process graphs with arbitrary sizes and topologies. However, this focus on local information can make it difficult to apply the Message Passing framework when interactions between distant nodes are important. We describe such datasets as exhibiting ‘long range interaction’ (LRI).  Recent work has shown the message passing paradigm can fail in some surprising ways on LRI problems.
 
-First, [[7]](#7) identified ‘over-smoothing’, where adding too many layers to a GNN can cause nearby nodes to have indistinguishable hidden features in the later layers of the network. This occurs because each convolution blurs together the features within a neighbourhood. This is especially an issue in the LRI  case, because a large number of layers is required for messages to reach between nodes that are far apart.
+First 
 
-Second, [[12]](#12) identified ‘over-squashing’, where the graph topology induces bottlenecks that prevent the flow of information between different parts of the graph. Because each message in a Message Passing Neural Network (MP-NN) has a fixed capacity, nodes with many neighbours may not be able to pass on all the useful information that they have access to. LRI tasks should therefore be harder to solve in topologies that have strict bottlenecks, because essential information is more likely to be lost while passing from node to node.
+Second, [[7]](#7) identified ‘over-smoothing’, where adding too many layers to a GNN can cause nearby nodes to have indistinguishable hidden features in the later layers of the network. This occurs because each convolution blurs together the features within a neighbourhood. This is especially an issue in the LRI  case, because a large number of layers is required for messages to reach between nodes that are far apart.
+
+Third, [[12]](#12) identified ‘over-squashing’, where the graph topology induces bottlenecks that prevent the flow of information between different parts of the graph. Because each message in a Message Passing Neural Network (MP-NN) has a fixed capacity, nodes with many neighbours may not be able to pass on all the useful information that they have access to. LRI tasks should therefore be harder to solve in topologies that have strict bottlenecks, because essential information is more likely to be lost while passing from node to node.
 
 
 ## 1.2 The Long Range Graph Benchmark
@@ -24,7 +26,9 @@ The Long Range Graph Benchmark [[1]](#1) are a number of datasets that attempt t
 
 ## Are these truly ‘long range’ benchmarks?
 
-The central claim of the paper is that the above datasets provide a benchmark for assessing whether a new method solves the LRI problem.
+The central claim of the paper is that the above datasets provide a benchmark for assessing whether a new method solves the LRI problem. While the paper doesn't explicitly describe what makes for a good benchmark, we believe the datasets should satisfy these criteria:
+* 
+
 In this section, we describe the arguments that the authors make in support of this claim, and discuss their strengths and weaknesses.
 
 TODO add a bit more here about what a good benchmark should look like.
@@ -44,7 +48,6 @@ In summary, there isn't a strong _a priori_ reason to believe that any of the da
 
 The authors showed that transformer architectures, which ignore the input graph in favour of a fully connected one, outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance. 
 
-TODO check whether expressivity this was also reflected in generalisation statistics.
 
 Arguably, we should look for more direct evidence that improved performance was due to an ability to leverage long range information.
 
@@ -90,7 +93,7 @@ Recall that our second goal above was to see whether improvements on the LRGB we
 
 TDOO more discussion of the JK models? These are interesting because they are explicitly done to help oversmoothing.
 
-### Is performance correlated with increased importance of distant nodes
+### Is performance correlated with increased importance of distant nodes?
 
 TODO need a better word than MPNN architectures - somewhere above we should make a point of defining local vs transformer architectures.
 
@@ -106,14 +109,32 @@ $$ | \frac{\delta \sum_i y_u^{(i)}{\delta }  | h_v^{(0)} | $$
 
 Where the individual gradients are obtained empirically through the Pytorch autograd system.
 
-To ensure that we could compare influence scores between models, we normalised the scores for each target node across all other nodes. That is, leting $I(u, v)$ be the influence of $v$ on node $u$, we computed the normalised influence score as:
+To ensure that we could compare influence scores between models, we normalised the scores for each target node across all other nodes. That is, letting $I(u, v)$ be the influence of $v$ on node $u$, we computed the normalised influence score as:
 
 $$ \tilde{I}(u, v) = \frac{I(u, v)}{\sum_i I(u, v_i)} $$
 
-TODO graph and discussion of results once we get the final influence scores
+The results of this analysis are shown below. The x-axis shows various path lengths, and the y-axis shows the normalised influence scores, averaged across all choices of target node for all graphs in the dataset.
 
-Preliminary results:
-![img.png](preliminary_results_influence.png)
+![img.png](assets/normalised_influence_scores.png)
+
+
+### Are distant nodes important for achieving good accuracy?
+
+While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note in (TABLE REF) that the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
+
+To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. If there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes. 
+
+The results are reported below, where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
+
+![img.png](assets/noising_experiment.png)
+![img.png](assets/noising_relative_f1_score.png)
+
+
+There are a number of interesting observations from this graph:
+* The transformer does leverage distant nodes more effectively than the GCN, even at distances that the GCN can 'reach'. This may indicate that the GCN is suffering from over-squashing, although it is not conclusive.
+* There appears to be no useful information beyond path lengths of ~8, even for transformers.
+* For both the GCN and the transformer, there is a mismatch between the maximum distance at which we obtain significant influence scores, and the maximum distance that affects accuracy. This indicates that at least some of the observed influence of distant nodes is 'spurious' in that it affects the model's predictions without increasing accuracy.
+
 
 
 ### Does model performance correlate with graph qualities that predict over-squashing?
@@ -130,25 +151,12 @@ $$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{|\delta S |}{\min
 
 where the _boundary_  $|\delta S |$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with empty intersection, $S$ and $V\S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets.
 
-(REF) showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that in turn controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$ (REF). 
+(REF) showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that in turn controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally, although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$ (REF). 
 
-In summary, we expect that graphs with low  values are a theoretically well grounded indicator of over-squashing in the graph.
+In summary, we expect that graphs with low values are a theoretically well grounded indicator of over-squashing in the graph.
 
 #### Results
 
-
-
-
-
-
-
-
-
-
-
-
-TODO I think we may need to do an extra experiment here. The issue is that we don't control for the fact that the transformer gets to see additional information that the GCN doesn't. I think what we should do is compare GCN and a 'sub-transformer', which is basically the GCN, but it replaces the graph for each node classification with a fully connected subgraph over the nodes that the GCN can see. Might be tricky to train?
-TODO additionally, we might also just vary the message passing capacity of a single network, since this is an other way of controlling for oversquashing. This is a bit easier since just vary 'dim inner' and rerun.
 
 
 ### Does rewiring the graph to remove bottlenecks improve performance?
