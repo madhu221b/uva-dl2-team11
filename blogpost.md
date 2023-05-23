@@ -8,14 +8,19 @@ It's common to describe such systems mathematically as a 'graph'. Formally, a gr
 
 Many neural networks that operate on graphs work within the ‘message passing’ paradigm, where each layer of the network is responsible for aggregating ‘messages’ - functions of the node features - that are passed from a node to its neighbours [[13]](#13). Adding depth to the network allows information from more distant nodes to be combined, as each subsequent layer allows information to be passed one edge further than the previous one. This approach is a powerful one: by designing the network to process only local neighbourhoods, we allow weight sharing between all neighborhoods and allow the networks to process graphs with arbitrary sizes and topologies. However, this focus on local information can make it difficult to apply the Message Passing framework when interactions between distant nodes are important. We describe such datasets as exhibiting ‘long range interaction’ (LRI).  Recent work has shown the message passing paradigm can fail in some surprising ways on LRI problems.
 
-First, it's clear that MPNNs may 'under-reach' if there aren't enough layers to allow important information to be combined from distant nodes (REF: oversmoothing).  
+First, it's clear that message passing neural networks (MPNNs) may 'under-reach' if there aren't enough layers to allow important information to be combined from distant nodes (REF: oversmoothing).  
 
-Second, [[7]](#7) identified ‘over-smoothing’, where adding too many layers to a GNN can cause nearby nodes to have indistinguishable hidden features in the later layers of the network. This occurs because each convolution blurs together the features within a neighbourhood. This is especially an issue in the LRI  case, because a large number of layers is required for messages to reach between nodes that are far apart.
+Second, [[7]](#7) identified ‘over-smoothing’, where adding too many layers to a MPNN can cause nearby nodes to have indistinguishable hidden features in the later layers of the network. This occurs because each convolution blurs together the features within a neighbourhood. This is especially an issue in the LRI  case, because a large number of layers is required for messages to reach between nodes that are far apart.
 
-Third, [[12]](#12) identified ‘over-squashing’, where the graph topology induces bottlenecks that prevent the flow of information between different parts of the graph. Because each message in a Message Passing Neural Network (MP-NN) has a fixed capacity, nodes with many neighbours may not be able to pass on all the useful information that they have access to. LRI tasks should therefore be harder to solve in topologies that have strict bottlenecks, because essential information is more likely to be lost while passing from node to node.
+Third, [[12]](#12) identified ‘over-squashing’, where the graph topology induces bottlenecks that prevent the flow of information between different parts of the graph. Because each message in an MPNN has a fixed capacity, nodes with many neighbours may not be able to pass on all the useful information that they have access to. LRI tasks should therefore be harder to solve in topologies that have strict bottlenecks, because essential information is more likely to be lost while passing from node to node.
 
+In the rest of the text, we refer to these three phenomena as the 'factors' that characterise the LRI problem.
 
-## 1.2 The Long Range Graph Benchmark
+### 1.2 Related work
+
+A number of methods have 
+
+## 1.3 The Long Range Graph Benchmark
 
 Many of the papers that propose methods in the LRI space have tested their approach on toy datasets - while this is useful, it can give an unrealistic depiction of the weaknesses of new approaches. Furthermore, many existing benchmark graph datasets are best solved by shallow MPNNs that only consider local information, and so will not benefit from even the most well-founded LRI methods [[1]](#1). 
 
@@ -68,7 +73,7 @@ Our project attempted to address the weaknesses we identified each of the above 
 
 1. To replicate the results of the original study. 
 2. to give our reader greater confidence that these datasets are a suitable benchmark for LRI methods, in the sense that improvements on these benchmarks can be attributed to an increased ability to solve the LRI problem.
-3. to provide a better characterisation of which LRI factors (e.g. oversquashing or oversmoothing) were important.
+3. to provide a better characterisation of which of the three LRI factors were most important.
 
 Because we had limited computational resources, we chose to focus on the Pascal dataset. Because this is a node classification dataset, it allows us to investigate long range interactions in ways that are impossible for graph level tasks.
 
