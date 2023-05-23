@@ -51,7 +51,7 @@ In summary, there isn't a strong _a priori_ reason to believe that any of the da
 
 ### Relative outperformance of transformer methods
 
-'Transformer' architectures are a type of graph neural network which ignore the original input graph in favour of a fully connected one. Doing so allows them to sidestep each of the issues typically faced in LRI datasets. Since pairwise interactions are modelled between all nodes, there is no danger of under-reaching. Additionally, this also means we aren't compelled to include as many message passing layers, preventing over-smoothing. Finally, since there is a direct path between any pair of nodes in a fully connected graph, no other node can serve as a bottleneck, preventing over-smoothing.
+'Transformer' architectures are a type of graph neural network which ignore the original input graph in favour of a fully connected one. Doing so allows them to sidestep each of the issues typically faced in LRI datasets. Since pairwise interactions are modelled between all nodes, there is no danger of under-reaching. Additionally, this also means we aren't compelled to include as many message passing layers, preventing over-smoothing. Finally, since there is a direct path between any pair of nodes in a fully connected graph, no other node can serve as a bottleneck, preventing over-smoothing. We will sometimes refer to GNNs that aren't transformers as 'local' methods.
 
 The authors showed that transformer architectures,  outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance.
 
@@ -97,11 +97,10 @@ TODO more discussion of the JK models? These are interesting because they are ex
 
 ### Is performance correlated with increased importance of distant nodes?
 
-TODO need a better word than MPNN architectures - somewhere above we should make a point of defining local vs transformer architectures.
 
 If the Pascal dataset was truly characterised by LRI, we should expect two things:
 - for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
-- for MPNN architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
+- for local architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
 
 To test these hypotheses, we used __influence functions__ (REF) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
 
@@ -119,6 +118,8 @@ The results of this analysis are shown below. The x-axis shows various path leng
 
 ![img.png](assets/normalised_influence_scores.png)
 
+
+We found that transformers do see a greater influence from distant nodes than local architectures. Surprisingly, we 
 
 ### Are distant nodes important for achieving good accuracy?
 
@@ -153,12 +154,13 @@ $$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{|\delta S |}{\min
 
 where the _boundary_  $|\delta S |$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with empty intersection, $S$ and $V\S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets.
 
-(REF) showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that in turn controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally, although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$ (REF). 
+(REF) showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that describes how 'bottlenecked' the neighbourhood of each edge in the graph is in terms of the number of cycles it appears. The definition is too lengthy to reproduce here, but negative values for a given edge $(i,j)$ can be interpreted as indicating that this edge forms a 'bridge'  between two sets of vertices.
 
-In summary, we expect that graphs with low values are a theoretically well grounded indicator of over-squashing in the graph.
+In turn, this curvature controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally, although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$ (REF). 
+
+In summary, we expect that graphs with low Cheeger values should suffer more from over-squashing.
 
 #### Results
-
 
 
 ### Does rewiring the graph to remove bottlenecks improve performance?
@@ -172,12 +174,9 @@ Plan:
 * Go through which experiments indicated that there was LRI in the data.
 
 
-
-
-
-
 # 5. Individual Contributions
 
+*__Nik Mather__ performed the experiments relating shortest path distance to influence, F1-score and accuracy (although he relied on Madhura and Avik to implement the influence score), assisted in writing the code for the Cheeger value experiments, and wrote most of th blogpost.
 
 
 # 6. References
