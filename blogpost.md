@@ -1,16 +1,26 @@
 # 1. Introduction
+
 ## 1.1 Graph Neural Networks
 
-TODO need to reference this section. 
+A great number of systems in different branches of science can be described as sets, and relationships between the members of a set. For example, molecules are sets of atoms, which are related by their bonds; images are sets of pixels that are related by their relative positions. 
 
-Many neural networks that operate on graphs work within the ‘message passing’ paradigm, where each layer of the network is responsible for aggregating ‘messages’ - functions of the node features - that are passed from a node to its neighbours. Adding depth to the network allows information from more distant nodes to be combined, as each subsequent layer allows information to be passed one edge further than the previous one. This approach is a powerful one: by designing the network to process only local neighbourhoods, we allow weight sharing between all neighborhoods and allow the networks to process graphs with arbitrary sizes and topologies. However, this focus on local information can make it difficult to apply the Message Passing framework when interactions between distant nodes are important. We describe such datasets as exhibiting ‘long range interaction’ (LRI).  Recent work has shown the message passing paradigm can fail in some surprising ways on LRI problems.
+It's common to describe such systems mathematically as a 'graph'. Formally, a graph G is a pair of sets $(V, E)$ such that $E = {(v_i, v_j) | v_i, v_j \in V}. $V$ is referred to as the vertices or nodes, and $E$ is referred to as the edges. The 'neighbours' of a node $v \in V$ are the set of nodes that are connected to $v$ by an edge. Because this structure is so common, there has been considerable interest in designing neural network architectures that can perform inference effectively on graphs. 
 
-First, [[7]](#7) identified ‘over-smoothing’, where adding too many layers to a GNN can cause nearby nodes to have indistinguishable hidden features in the later layers of the network. This occurs because each convolution blurs together the features within a neighbourhood. This is especially an issue in the LRI  case, because a large number of layers is required for messages to reach between nodes that are far apart.
+Many neural networks that operate on graphs work within the ‘message passing’ paradigm, where each layer of the network is responsible for aggregating ‘messages’ - functions of the node features - that are passed from a node to its neighbours [[13]](#13). Adding depth to the network allows information from more distant nodes to be combined, as each subsequent layer allows information to be passed one edge further than the previous one. This approach is a powerful one: by designing the network to process only local neighbourhoods, we allow weight sharing between all neighborhoods and allow the networks to process graphs with arbitrary sizes and topologies. However, this focus on local information can make it difficult to apply the Message Passing framework when interactions between distant nodes are important. We describe such datasets as exhibiting ‘long range interaction’ (LRI).  Recent work has shown the message passing paradigm can fail in some surprising ways on LRI problems.
 
-Second, [[12]](#12) identified ‘over-squashing’, where the graph topology induces bottlenecks that prevent the flow of information between different parts of the graph. Because each message in a Message Passing Neural Network (MP-NN) has a fixed capacity, nodes with many neighbours may not be able to pass on all the useful information that they have access to. LRI tasks should therefore be harder to solve in topologies that have strict bottlenecks, because essential information is more likely to be lost while passing from node to node.
+First, it's clear that message passing neural networks (MPNNs) may 'under-reach' if there aren't enough layers to allow important information to be combined from distant nodes (REF: oversmoothing).  
 
+Second, [[7]](#7) identified ‘over-smoothing’, where adding too many layers to a MPNN can cause nearby nodes to have indistinguishable hidden features in the later layers of the network. This occurs because each convolution blurs together the features within a neighbourhood. This is especially an issue in the LRI  case, because a large number of layers is required for messages to reach between nodes that are far apart.
 
-## 1.2 The Long Range Graph Benchmark
+Third, [[12]](#12) identified ‘over-squashing’, where the graph topology induces bottlenecks that prevent the flow of information between different parts of the graph. Because each message in an MPNN has a fixed capacity, nodes with many neighbours may not be able to pass on all the useful information that they have access to. LRI tasks should therefore be harder to solve in topologies that have strict bottlenecks, because essential information is more likely to be lost while passing from node to node.
+
+In the rest of the text, we refer to these three phenomena as the 'factors' that characterise the LRI problem.
+
+### 1.2 Related work
+
+A number of methods have 
+
+## 1.3 The Long Range Graph Benchmark
 
 Many of the papers that propose methods in the LRI space have tested their approach on toy datasets - while this is useful, it can give an unrealistic depiction of the weaknesses of new approaches. Furthermore, many existing benchmark graph datasets are best solved by shallow MPNNs that only consider local information, and so will not benefit from even the most well-founded LRI methods [[1]](#1). 
 
@@ -24,10 +34,12 @@ The Long Range Graph Benchmark [[1]](#1) are a number of datasets that attempt t
 
 ## Are these truly ‘long range’ benchmarks?
 
-The central claim of the paper is that the above datasets provide a benchmark for assessing whether a new method solves the LRI problem.
-In this section, we describe the arguments that the authors make in support of this claim, and discuss their strengths and weaknesses.
+The central claim of the paper is that the above datasets provide a benchmark for assessing whether a new method solves the LRI problem. While the paper doesn't explicitly describe what makes for a good benchmark, we believe the datasets should satisfy these criteria:
+1. At least one of the three factors that we described as characterising LRI, under-reaching, over-smoothing and over-squashing, should be present in the dataset.
+2. The majority of improvements in model performance on the benchmark should come from solving one of the above problems.
 
-TODO add a bit more here about what a good benchmark should look like.
+
+In this section, we describe the arguments that the authors make in support of their claim, and discuss their strengths and weaknesses.
  
 
 ### LRI by Construction
@@ -42,9 +54,9 @@ In summary, there isn't a strong _a priori_ reason to believe that any of the da
 
 ### Relative outperformance of transformer methods
 
-The authors showed that transformer architectures, which ignore the input graph in favour of a fully connected one, outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance. 
+'Transformer' architectures are a type of graph neural network which ignore the original input graph in favour of a fully connected one. Doing so allows them to sidestep each of the issues that characterise LRI problems. Since pairwise interactions are modelled between all nodes, there is no danger of under-reaching. Additionally, this also means we aren't compelled to include as many message passing layers, preventing over-smoothing. Finally, since there is a direct path between any pair of nodes in a fully connected graph, no other node can serve as a bottleneck, preventing over-smoothing. We will sometimes refer to GNNs that aren't transformers as 'local' methods.
 
-TODO check whether expressivity this was also reflected in generalisation statistics.
+The authors showed that transformer architectures,  outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance.
 
 Arguably, we should look for more direct evidence that improved performance was due to an ability to leverage long range information.
 
@@ -55,17 +67,13 @@ The authors generated statistics characterising the graphs found in each dataset
 Therefore, we think these graph statistics need to be more directly linked with model performance before we can conclude that they are proof of LRI in the datasets.
 
 
-### Importance of Positional Encodings
-TODO
-
-
 ### Our Paper
 
 Our project attempted to address the weaknesses we identified each of the above arguments. Our ultimate goals were:
 
 1. To replicate the results of the original study. 
 2. to give our reader greater confidence that these datasets are a suitable benchmark for LRI methods, in the sense that improvements on these benchmarks can be attributed to an increased ability to solve the LRI problem.
-3. to provide a better characterisation of which LRI factors (e.g. oversquashing or oversmoothing) were important.
+3. to provide a better characterisation of which of the three LRI factors were most important.
 
 Because we had limited computational resources, we chose to focus on the Pascal dataset. Because this is a node classification dataset, it allows us to investigate long range interactions in ways that are impossible for graph level tasks.
 
@@ -88,15 +96,14 @@ A brief description of the models, and their performance, is given below:
 
 Recall that our second goal above was to see whether improvements on the LRGB were caused by an improved ability to model long range interactions. From this point of view, these results are worrisome, because we found that a model that could only use local information - which is by definition not capable of modelling LRI - was nearly as performant as one that could model interactions between all nodes.
 
-TDOO more discussion of the JK models? These are interesting because they are explicitly done to help oversmoothing.
+TODO more discussion of the JK models? These are interesting because they are explicitly done to help oversmoothing.
 
-### Is performance correlated with increased importance of distant nodes
+### Is performance correlated with increased importance of distant nodes?
 
-TODO need a better word than MPNN architectures - somewhere above we should make a point of defining local vs transformer architectures.
 
 If the Pascal dataset was truly characterised by LRI, we should expect two things:
 - for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
-- for MPNN architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
+- for local architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
 
 To test these hypotheses, we used __influence functions__ (REF) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
 
@@ -106,14 +113,34 @@ $$ | \frac{\delta \sum_i y_u^{(i)}{\delta }  | h_v^{(0)} | $$
 
 Where the individual gradients are obtained empirically through the Pytorch autograd system.
 
-To ensure that we could compare influence scores between models, we normalised the scores for each target node across all other nodes. That is, leting $I(u, v)$ be the influence of $v$ on node $u$, we computed the normalised influence score as:
+To ensure that we could compare influence scores between models, we normalised the scores for each target node across all other nodes. That is, letting $I(u, v)$ be the influence of $v$ on node $u$, we computed the normalised influence score as:
 
 $$ \tilde{I}(u, v) = \frac{I(u, v)}{\sum_i I(u, v_i)} $$
 
-TODO graph and discussion of results once we get the final influence scores
+The results of this analysis are shown below. The x-axis shows various path lengths, and the y-axis shows the normalised influence scores, averaged across all choices of target node for all graphs in the dataset.
 
-Preliminary results:
-![img.png](preliminary_results_influence.png)
+![img.png](assets/normalised_influence_scores.png)
+
+
+We found that transformers do see a greater influence from distant nodes than local architectures. Surprisingly, we 
+
+### Are distant nodes important for achieving good accuracy?
+
+While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note in (TABLE REF) that the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
+
+To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. If there is useful information in distant nodes, we expect to see a larg e drop in accuracy when we replace the features of those nodes. 
+
+The results are reported below, where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
+
+![img.png](assets/noising_experiment.png)
+![img.png](assets/noising_relative_f1_score.png)
+
+
+There are a number of interesting observations from this graph:
+* The transformer does leverage distant nodes more effectively than the GCN, even at distances that the GCN can 'reach'. This may indicate that the GCN is suffering from over-squashing, although it is not conclusive.
+* There appears to be no useful information beyond path lengths of ~8, even for transformers.
+* For both the GCN and the transformer, there is a mismatch between the maximum distance at which we obtain significant influence scores, and the maximum distance that affects accuracy. This indicates that at least some of the observed influence of distant nodes is 'spurious' in that it affects the model's predictions without increasing accuracy.
+
 
 
 ### Does model performance correlate with graph qualities that predict over-squashing?
@@ -130,25 +157,13 @@ $$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{|\delta S |}{\min
 
 where the _boundary_  $|\delta S |$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with empty intersection, $S$ and $V\S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets.
 
-(REF) showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that in turn controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$ (REF). 
+(REF) showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that describes how 'bottlenecked' the neighbourhood of each edge in the graph is in terms of the number of cycles it appears. The definition is too lengthy to reproduce here, but negative values for a given edge $(i,j)$ can be interpreted as indicating that this edge forms a 'bridge'  between two sets of vertices.
 
-In summary, we expect that graphs with low  values are a theoretically well grounded indicator of over-squashing in the graph.
+In turn, this curvature controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally, although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$ (REF). 
+
+In summary, we expect that graphs with low Cheeger values should suffer more from over-squashing.
 
 #### Results
-
-
-
-
-
-
-
-
-
-
-
-
-TODO I think we may need to do an extra experiment here. The issue is that we don't control for the fact that the transformer gets to see additional information that the GCN doesn't. I think what we should do is compare GCN and a 'sub-transformer', which is basically the GCN, but it replaces the graph for each node classification with a fully connected subgraph over the nodes that the GCN can see. Might be tricky to train?
-TODO additionally, we might also just vary the message passing capacity of a single network, since this is an other way of controlling for oversquashing. This is a bit easier since just vary 'dim inner' and rerun.
 
 
 ### Does rewiring the graph to remove bottlenecks improve performance?
@@ -162,12 +177,9 @@ Plan:
 * Go through which experiments indicated that there was LRI in the data.
 
 
-
-
-
-
 # 5. Individual Contributions
 
+*__Nik Mather__ performed the experiments relating shortest path distance to influence, F1-score and accuracy (although he relied on Madhura and Avik to implement the influence score), assisted in writing the code for the Cheeger value experiments, and wrote most of th blogpost.
 
 
 # 6. References
@@ -206,3 +218,6 @@ Singh, Sandeep et al. “SATPdb: a database of structurally annotated therapeuti
 
 <a id="12">[12]</a>
 Alon, Uri, and Eran Yahav. "On the bottleneck of graph neural networks and its practical implications." arXiv preprint arXiv:2006.05205 (2020).
+
+<a id="13">[13]</a>
+Bronstein, Michael M., et al. "Geometric deep learning: Grids, groups, graphs, geodesics, and gauges." arXiv preprint arXiv:2104.13478 (2021).
