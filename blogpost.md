@@ -18,29 +18,30 @@ In the rest of the text, we refer to these three phenomena as the 'factors' that
 
 A number of methods have 
 
-## 1.3 The Long Range Graph Benchmark
+# 2 The Long Range Graph Benchmark
 
+## 2.1 The Datasets
 Many of the papers that propose methods in the LRI space have tested their approach on toy datasets - while this is useful, it can give an unrealistic depiction of the weaknesses of new approaches. Furthermore, many existing benchmark graph datasets are best solved by shallow MPNNs that only consider local information, and so will not benefit from even the most well-founded LRI methods [[1]](#1). 
 
-The Long Range Graph Benchmark [[1]](#1) are a number of datasets that attempt to provide a common framework for testing and benchmarking new LRI methods. Putatively, these are real world datasets with tasks that can only be solved by successfully solving the LRI problem, and so provide an effective test of any new LRI method. There are five datasets in total - we will describe each of these briefly below.
+The Long Range Graph Benchmark [[1]](#1) are a number of datasets that attempt to provide a common framework for testing and benchmarking new LRI methods. Putatively, these are real world datasets with tasks that can only be solved by successfully solving the LRI problem, and so provide an effective test of any new LRI method. There are five datasets in total. We will describe each of them briefly below.
 
-1. __PascalVOC-SP__: This dataset was derived from the Pascal 2011 image dataset [[8]](#8), which has class labels associated to every pixel. Each image was segmented into superpixels, and the task is to predict the class of the pixel that was originally at the centroid of each pixel. A graph is formed where the nodes correspond to each superpixel, the node features are statistics RGB values within each pixel, and the edges correspond to which superpixels are contiguous in the image. 
-2. __COCO-SP__: this is similar to PascalVOC-SP, but was derived from the MS COCO dataset [[9]](#9).
-3. __PCQM-Contact__: This dataset was derived from the PCQM4M [[10]](#10) molecular dataset, where each node is an atom, and the edges correspond to the molecular structure. The task is to predict pairs of nodes that will be less than 3.5 angstroms apart in the final configuration of the molecule. To ensure that only ‘long-range’ predictions are counted, the task is limited to pairs of molecules that are separated by at least 5 hops.
-4. __Peptides-func__ and __Peptides-struct__: these are derived from the SATPdb [[11]](#11) dataset of peptides, a class of molecules that is characterised by a large number of nodes and complex structure. While typical peptide datasets use nodes to represent amino acids, the authors instead split these into multiple nodes, each representing individual atoms. In doing so, they imposed extra separation between the graphs. Then they defined two tasks, one a graph-level regression, one a graph-level classification, to predict molecular properties of the graph.
+1. __PascalVOC-SP__: This is a node classification dataset derived from the Pascal 2011 image dataset [[8]](#8), where each node corresponds to a region of the image belonging to a particular class. Each image is segmented into superpixels, and the task is to predict the class of the pixel. A graph is formed where the nodes correspond to each superpixel, the 14-dim node features are 12-dim RGB values and 2-dim coordinates of the center of mass of pixel locations. The edges correspond to which superpixels are contiguous in the image. 
+2. __COCO-SP__: This dataset is similar to PascalVOC-SP  but is derived from the MS COCO dataset [[9]](#9).
+3. __PCQM-Contact__: This dataset is derived from the PCQM4M [[10]](#10) molecular dataset, where each node is an atom, and the edges correspond to the molecular structure. The task is to predict pairs of distant nodes that will be less than 3.5Å apart in the final configuration of the molecule. To ensure that only ‘long-range’ predictions are counted, the task is limited to pairs of molecules that are separated by at least 5 hops.
+4. __Peptides-func__ and __Peptides-struct__: These datasets are derived from the SATPdb [[11]](#11) dataset of peptides, a class of molecules that is characterised by a large number of nodes and complex structure. While typical Peptide datasets use nodes to represent amino acids, the authors instead split these into multiple nodes, each representing individual atoms. In doing so, they impose extra separation between the graphs. Then they define two tasks, one a graph-level regression, one a graph-level classification, to predict molecular properties of the graph.
 
 
-## Are these truly ‘long range’ benchmarks?
+## 2.2 Are these truly ‘long range’ benchmarks?
 
 The central claim of the paper is that the above datasets provide a benchmark for assessing whether a new method solves the LRI problem. While the paper doesn't explicitly describe what makes for a good benchmark, we believe the datasets should satisfy these criteria:
-1. At least one of the three factors that we described as characterising LRI, under-reaching, over-smoothing and over-squashing, should be present in the dataset.
+1. At least one of the three factors that we described as characterising LRI- under-reaching, over-smoothing and over-squashing, should be present in the dataset.
 2. The majority of improvements in model performance on the benchmark should come from solving one of the above problems.
 
 
 In this section, we describe the arguments that the authors make in support of their claim, and discuss their strengths and weaknesses.
  
 
-### LRI by Construction
+## 2.3 LRI by Construction
 
 The authors argue that they construct their datasets in such a way that acheiving good performance on them requires solving the LRI problem. In one cases, this is convincing: the PCQM contact dataset only considers interactions between distant nodes, and so cannot be solved by local information alone.
 
