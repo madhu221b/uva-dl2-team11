@@ -91,18 +91,19 @@ We implement the SDRF algorithm to rewire graphs in the PascalVOC-SP dataset. Si
 The results however show that rewiring actually negatively affects the performance of GCN model. We attribute this outcome as the nature of the data which are 2D image superpixel graphs. Even though there might exist bottlenecks in this space, connecting and passing information between disparate patches of an image might truly confuse the trained model. The f1 scores of the Transformer+LapPE model remains the same throughout, which was expected as this model fully-connects the graph regardless.
 
 ### 4.1.2 Geometric deep learning: E(n)-Invariant and E(n)-Equivariant GNN
+  Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore architectures where instead of changing the semantic meaning of the graph by adding edges, we can make the features of the graph itself more expressive. One such domain where we can make the message passing approach of GNNs more expressive is Geometric Deep Learning (GEDL). 
+   We specifically explore three GEDL models. 
 
+### 4.1.3 Geometric deep learning: E(3) Steerable GNN
 
-| 
-<img width="1212" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/57d62a49-392e-4933-9ff1-f10e813f235c"> | <img width="488" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/37116622/a669f6ae-57de-4ca2-bbc3-40cc7b8cbfa8"> |
+@Aditya 
+| <img width="1212" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/57d62a49-392e-4933-9ff1-f10e813f235c"> | <img width="488" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/37116622/a669f6ae-57de-4ca2-bbc3-40cc7b8cbfa8"> |
 | -------- | -------- |
 |  Figure 3: E(n)-Invariant and E(n)-Equivariant Architecture  | Figure 4: E(3) Steerable Architecture |
 
 
 
-### 4.1.3 Geometric deep learning: E(3) Steerable GNN
 
-@Aditya 
 
 ### Which models perform best on the Pascal Dataset?
 
