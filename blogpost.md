@@ -122,7 +122,7 @@ A brief description of the models, and their performance, is given below:
 
 | <img width="555" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/8a49f585-8e3d-440d-8f37-b86b17286e12">  | <img width="475" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/e03ffad4-3177-4063-a441-d6c07c947a36"> | 
 | -------- | -------- |
-|  <a id="tab1"> Table 1 </a>: Results for Pascal-SP dataset   |<a id="tab2">Table 2 </a>: Results for COCO-SP dataset  |  
+|  <a id="tab1"> Table 1 </a>: Results for PascalVOC-SP dataset   |<a id="tab2">Table 2 </a>: Results for COCO-SP dataset  |  
 
 Recall that our second goal above was to see whether improvements on the LRGB were caused by an improved ability to model long range interactions. From this point of view, these results are worrisome, because we found that a model that could only use local information - which is by definition not capable of modelling LRI - was nearly as performant as one that could model interactions between all nodes.
 
@@ -147,7 +147,10 @@ $$ \tilde{I}(u, v) = \frac{I(u, v)}{\sum_i I(u, v_i)} $$
 
 The results of this analysis are shown below. The x-axis shows various path lengths, and the y-axis shows the normalised influence scores, averaged across all choices of target node for all graphs in the dataset.
 
-![img.png](assets/normalised_influence_scores.png)
+
+| <img width="515" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/1ee4e4d6-7b7c-4e00-936f-de3af831111c">|![image](https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/c838ec0b-7e37-458c-a539-cd782415942e) |
+| -------- | -------- |
+| <a id="fig5_1"> Figure 5.1 </a>: Influence Scores for PascalVOC-SP | <a id="fig5_2"> Figure 5.2 </a>: Influence Scores for COCO-SP  |
 
 Overall, we found that transformers do see a greater influence from distant nodes than local architectures.
 
