@@ -99,10 +99,9 @@ As with the original study, we found that a transformer architecture performed b
 
 A brief description of the models, and their performance, is given below:
 
-# TODO add number of layers column
-#TODO add column describing models?
-
-![img.png](assets/summarised_data/model_summary.png)
+| <img width="498" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/c1cd197b-6a44-4864-98e1-e007cc9985d9">  | <img width="497" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/41a28076-4c14-4972-a634-dca1a69f2710"> | 
+| -------- | -------- |
+|  Table 1: Results for Pascal-SP dataset   | Table 2: Results for COCO-SP dataset  |  
 
 Recall that our second goal above was to see whether improvements on the LRGB were caused by an improved ability to model long range interactions. From this point of view, these results are worrisome, because we found that a model that could only use local information - which is by definition not capable of modelling LRI - was nearly as performant as one that could model interactions between all nodes.
 
