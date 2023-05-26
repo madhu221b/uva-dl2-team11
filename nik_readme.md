@@ -19,4 +19,35 @@ There are two pre-prepared pickle files available for use. They are found in ```
 
 ## Influence Score experiments
 
+To obtain run the influence score experiments:
+* navigate to the directory containing model_inference.py.
+* Set up the config files, as was required for model training.
+* Run the following terminal command to generate the raw gradient information:
+
+```
+python model_inference.py --cfg <path_to_config_file> device 'cuda_device'
+```
+
+* This will output a pickle file containing the gradients to "inf_scores_{model_type}.pkl".
+* Now run the following code to plot the influence score for a given model:
+
+```
+from src.influence import process_all_graphs, plot_mean_influence_by_distance
+
+file_name = './path/to/pickle/
+influence_df_gcn = process_all_graphs('inf_scores_gcn_with_adj.pkl', normalise=True)
+
+fig, ax = plt.subplots()
+plot_mean_influence_by_distance(influence_df_gcn, ax, 'GCN')
+
+ax.set_xlabel('Shortest path distance from target node')
+ax.set_ylabel('Proportion of total gradient')
+ax.legend()
+```
+
+Alternatively, the notebook 'influence.ipynb' contains an example of this pipeline.
+
+For convenience, pickle files containing the influence scores of 3 models are avaiable in
+
+```assets/influence_experiments/<model_name>.pkl```
 
