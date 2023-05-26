@@ -127,7 +127,7 @@ $$ f_{d}(x) =  E_{X_1, ..., X_D}[f(x) | X_{\bar{d}}] $$
 $$= E_{X_d |X_{\bar{d}}}  ..., X_D}[f(x)] $$
 $$ \approx E_{X_d}[f(x)] \approx f(x_{\bar{d}}, E_{X_d}) $$
 
-Where the last two steps assume the input features are independent, and that the model is locally linear. The argument was adapted from [14].
+Where the last two steps assume the input features are independent, and that the model is locally linear. The argument was inspired by [14].
 Therefore, if there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes. 
 
 The results are reported below, where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
