@@ -92,7 +92,7 @@ The results however show that rewiring actually negatively affects the performan
 
 ### 4.1.2 Geometric deep learning: E(n)-Invariant and E(n)-Equivariant GNN
   Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore architectures where instead of changing the semantic meaning of the graph by adding edges, we can make the features of the graph itself more expressive. One such domain where we can make the message passing approach of GNNs more expressive is Geometric Deep Learning (GEDL). 
-   We specifically explore three GEDL models. 
+   We specifically explore three GEDL models - E(n)-Invariant, E(n)-Equivariant [[16]](#16) and E(3) Steerable GNN [[17]](#17). We discuss the first two models in brief now and E(3) Steerable GNN in the next section. The 14-dimensional node embedding of the long-range PascalVOC-SP and COCO-SP datasets have 12-dimensional information related to the color of the node pixel while the other 2-dimensions convey the $x$ and $y$ coordinates of the node. Instead of treating these last two features as part of the node's "normal" feature, we treat it as the node's "positional" feature. In the case of E($n$)-invariant and E($n$)-equivariant architectures, we use type-0 representations (i.e. relative distances) to define the geometry of the graph.  In case of E($n$)-invariant, the messages are conditioned on distance and these are used to update the node embeddings layer by layer. While for E($n$) equivariant architecture, we also update the positional/coordinate embeddings of the node. Figure [Figure 3](#fig3) highlights the architecture along with the message passing equations.
 
 ### 4.1.3 Geometric deep learning: E(3) Steerable GNN
 
@@ -274,3 +274,9 @@ Dwivedi, Vijay Prakash and Xavier Bresson. “A Generalization of Transformer Ne
 
 <a id="15">[15]</a>
 Lundberg, S. M., & Lee, S. I. (2017). A unified approach to interpreting model predictions. Advances in neural information processing systems, 30.
+
+<a id="16">[16]</a>
+Satorras, Victor Garcia et al. “E(n) Equivariant Graph Neural Networks.” International Conference on Machine Learning (2021).
+
+<a id="17">[17]</a>
+Brandstetter, Johannes et al. “Geometric and Physical Quantities improve E(3) Equivariant Message Passing.” ArXiv abs/2110.02905 (2021): n. pag.
