@@ -82,9 +82,9 @@ Since, one of the main problem of LRI in MP-GNNs is over-squashing, a quick surv
 We implement the SDRF algorithm to rewire graphs in the PascalVOC-SP dataset. Since, the algorithm only takes into account the graph topology and remains agnostic to other features, there are no edge features for the new edges. Hence, in order to have a fair comparison, we first trained the GCN and Transformer+LapPE model on graphs with their edge features removed (i.e replacing with ones tensor) and obtained a baseline f1 performance. We then proceeded with adding a certain percentage of total edges in each graph of the test dataset using SDRF algorithm and benchmarked the trained model. To determine if rewiring with SDRF is beneficial, we compare the resulting f1 scores with baseline.
 
 
-| <img width="498" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/37116622/c957e127-98d5-4209-88f0-a1a5b919b76e"> | <img width="488" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/37116622/a669f6ae-57de-4ca2-bbc3-40cc7b8cbfa8"> |
+| ![](assets/sdrf_1.png) |![](assets/sdrf_2.png) |
 | -------- | -------- |
-|  Figure 1: Obtained f1 score on adding a certain ratio of original edges for GCN.  | Figure 2: Obtained f1 score on adding a certain ratio of original edges for Transformer+LapPE. |
+| <a id="fig1"> Figure 1 </a>: Obtained f1 score on adding a certain ratio of original edges for GCN.  | <a id="fig2"> Figure 2 </a>: Obtained f1 score on adding a certain ratio of original edges for Transformer+LapPE.  |
 
 **Note** - baseline f1 is the case when no edges are added i.e. ratio 0.0
 
