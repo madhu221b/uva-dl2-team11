@@ -123,7 +123,7 @@ While the above analysis shows that the predictions of our transformer are affec
 
 To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $ x_d $ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node.
 
-Also, denote $ x_{\bar{d}} = { x_i, i \neq d}$. Then we measure the accuracy of the model $f_d(x)$ given by:
+Also, denote $ x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
 
 $$ f_{d}(x) =  E_{X_1, ..., X_D}[f(x) | X_{\bar{d}}] $$
 $$= E_{X_d |X_{\bar{d}}}  ..., X_D}[f(x)] $$
