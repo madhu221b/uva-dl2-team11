@@ -153,9 +153,12 @@ Therefore, if there is useful information in distant nodes, we expect to see a l
 
 The results are reported below, where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
 
-![img.png](assets/noising_experiment.png)
-![img.png](assets/noising_relative_f1_score.png)
 
+
+
+| ![img.png](assets/noising_experiment.png) | ![img.png](assets/noising_relative_f1_score.png)| 
+| -------- | -------- |
+|  Label the figure   | Label the figure   |  
 
 There are a number of interesting observations from this graph:
 * The transformer does leverage distant nodes more effectively than the GCN, even at distances that the GCN can 'reach'. This may indicate that the GCN is suffering from over-squashing, although it is not conclusive.
