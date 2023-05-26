@@ -111,12 +111,6 @@ Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore a
 |  <a id="fig3"> Figure 3 </a>: E(n)-Invariant and E(n)-Equivariant Architecture  |
 
 
-|  ![](assets/segnn.png) |
-|  -------- |
-| <a id="fig4"> Figure 4: </a> SEGNN Architecture |
-
-
-
 ### Which models perform best?
 
 As with the original study, we found that a transformer architecture performed better than all other models. However, we also tested a variety of MPNN models that explicitly encoded geometric information. We felt that these were a 'fairer' test of the capacity of a message passing network, because the geometric relationship between two nodes is more semantically meaningful than the one imposed by the arbitrary topology of the superpixel boundary graph. We found that these models gave comparable performance  to the transformer, even with as few as two message passing layers.
