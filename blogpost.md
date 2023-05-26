@@ -1,4 +1,4 @@
-# 1 Introduction
+# 1. Introduction
 
 ##  Graph Neural Networks
 
@@ -14,7 +14,7 @@ Many neural networks that operate on graphs work within the ‘message passing�
 
 In the rest of the text, we refer to these three phenomena as the 'factors' that characterise the LRI problem.
 
-# 2 The Long Range Graph Benchmark
+# 2. The Long Range Graph Benchmark
 
 ## 2.1 The Datasets
 Many of the papers that propose methods in the LRI space have tested their approach on toy datasets - while this is useful, it can give an unrealistic depiction of the weaknesses of new approaches. Furthermore, many existing benchmark graph datasets are best solved by shallow MPNNs that only consider local information, and so will not benefit from even the most well-founded LRI methods [[1]](#1). 
@@ -60,7 +60,7 @@ Arguably, we should look for more direct evidence that improved performance was 
 The authors generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claim that high values of these statistics indicate LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem. A graph may have a large number of nodes, and a complex topology, but it doesn't follow that a task defined on that graph can only be solved by modeling global interactions. For example, consider the case where our task is to calculate the sum of the hidden features in nodes - this isn't dependent on graph topology. Therefore, we think these graph statistics need to be more directly linked with model performance before we can conclude that they are proof of LRI in the datasets.
 
 
-# 3 Our Contributions
+# 3. Our Contributions
 
 Our project attempts to address the weaknesses we identified in each of the above arguments. Our ultimate goals are:
 
@@ -71,7 +71,23 @@ Our project attempts to address the weaknesses we identified in each of the abov
 
 Because we had limited computational resources, we chose to focus on the PascalVOC-SP and COCO-SP datasets. Because this is a node classification dataset, it allows us to investigate long range interactions in ways that are impossible for graph level tasks. Also, we employ the models from geometric deep learning domain to see how they perform on these datasets. The issue however we faced is that the molecular datasets - PCQM-Contact, Peptides-func and Peptides-struct have no positional information hence we stick with the above two datasets as they have positional information associated with each node. 
 
-# 4 Experiments
+# 4. Experiments
+
+## 4.1 Alternative approaches to mitigate LRI problem:
+
+### 4.1.1 Stochastic Discrete Ricci Flow (SDRF) algorithm 
+
+
+
+@avik discuss your setup, results, and then ill use your last line as the prerequisite for using geometric deep models
+
+
+### 4.1.2 Geometric deep learning: E(n)-Invariant and E(n)-Equivariant GNN
+
+
+### 4.1.3 Geometric deep learning: E(3) Steerable GNN
+
+@Aditya 
 
 ### Which models perform best on the Pascal Dataset?
 
