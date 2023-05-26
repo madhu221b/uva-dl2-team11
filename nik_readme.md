@@ -33,6 +33,7 @@ python model_inference.py --cfg <path_to_config_file> device 'cuda_device'
 
 ```
 from src.influence import process_all_graphs, plot_mean_influence_by_distance
+import matplotlib.pyplot as plt
 
 file_name = './path/to/pickle/
 influence_df_gcn = process_all_graphs('inf_scores_gcn_with_adj.pkl', normalise=True)
