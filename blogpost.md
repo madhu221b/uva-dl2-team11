@@ -127,7 +127,7 @@ Also, denote $ x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy
 
 $$ f_{d}(x) =  E_{X_1, ..., X_D}[f(x) | X_{\bar{d}}] $$
 $$= E_{X_d |X_{\bar{d}}}  ..., X_D}[f(x)] $$
-$$ \approx E_{X_d}[f(x)] \approx f(x_{\bar{d}}, E_{X_d}) $$
+$$ \approx E_{X_d}[f(x)] \approx f(x_{\bar{d}}, E[{X_d}]) $$
 
 Where the last two steps assume the input features are independent, and that the model is locally linear. The argument was inspired by [14].
 Therefore, if there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes. 
