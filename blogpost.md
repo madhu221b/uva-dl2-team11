@@ -99,7 +99,7 @@ As with the original study, we found that a transformer architecture performed b
 
 A brief description of the models, and their performance, is given below:
 
-| <img width="498" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/c1cd197b-6a44-4864-98e1-e007cc9985d9">  | <img width="497" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/41a28076-4c14-4972-a634-dca1a69f2710"> | 
+| <img width="498" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/c1cd197b-6a44-4864-98e1-e007cc9985d9">  | <img width="498" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/e03ffad4-3177-4063-a441-d6c07c947a36"> | 
 | -------- | -------- |
 |  Table 1: Results for Pascal-SP dataset   | Table 2: Results for COCO-SP dataset  |  
 
