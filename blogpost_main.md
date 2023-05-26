@@ -122,11 +122,9 @@ If the Pascal dataset was truly characterised by LRI, we should expect two thing
 - for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
 - for local architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
 
-To test these hypotheses, we used __influence functions__ (REF) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
+To test these hypotheses, we used __influence functions__ [4] to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
 
-__#TODO__ - Madhura/Avik can you guys double check I have this right?
-
-$$ | \frac{\delta \sum_i y_u^{(i)}{\delta }  | h_v^{(0)} | $$
+$$ \sum_i | \frac{\delta  y_u^{(i)}}{\delta h_v^{(0)} } | $$
 
 Where the individual gradients are obtained empirically through the Pytorch autograd system.
 
@@ -138,14 +136,20 @@ The results of this analysis are shown below. The x-axis shows various path leng
 
 ![img.png](assets/normalised_influence_scores.png)
 
+Overall, we found that transformers do see a greater influence from distant nodes than local architectures.
 
-We found that transformers do see a greater influence from distant nodes than local architectures. Surprisingly, we 
+### 3.3 Are distant nodes important for achieving good accuracy?
 
-### Are distant nodes important for achieving good accuracy?
+While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note that in section 3.1, the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
 
-While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note in (TABLE REF) that the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
+To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $ x\_d $ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node. Also, denote $ x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
 
-To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. If there is useful information in distant nodes, we expect to see a larg e drop in accuracy when we replace the features of those nodes. 
+$$ f_{d}(x) =  E_{X_1, ..., X_D}[f(x) | X_{\bar{d}}] $$
+$$= E_{X_d |X_{\bar{d}}}  ..., X_D}[f(x)] $$
+$$ \approx E_{X_d}[f(x)] \approx f(x_{\bar{d}}, E[{X_d}]) $$
+
+Where the last two steps assume the input features are independent, and that the model is locally linear. The argument was inspired by [15].
+Therefore, if there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes. 
 
 The results are reported below, where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
 
@@ -168,35 +172,50 @@ We hypothesised that if these statistics were indicative of the presence of long
 
 While it's not clear that the statistics we mentioned are related to over-squashing, we also investigated an alternative statistic that has a stronger theoretical relationship with over-squashing.
 
-Recently (REF) has shown that the degree of over-squashing can be measured by spectral properties of a graph. The Cheeger constant $h_G$ of a graph G is defined as:
+Recently [2] has shown that the degree of over-squashing can be measured by spectral properties of a graph. The Cheeger constant $h_G$ of a graph G is defined as:
 
 $$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{|\delta S |}{\min vol(S), vol(V/S)}$$
 
 where the _boundary_  $|\delta S |$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with empty intersection, $S$ and $V\S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets.
 
-(REF) showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that describes how 'bottlenecked' the neighbourhood of each edge in the graph is in terms of the number of cycles it appears. The definition is too lengthy to reproduce here, but negative values for a given edge $(i,j)$ can be interpreted as indicating that this edge forms a 'bridge'  between two sets of vertices.
+[2] showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that describes how 'bottlenecked' the neighbourhood of each edge in the graph is in terms of the number of cycles it appears. The definition is too lengthy to reproduce here, but negative values for a given edge $(i,j)$ can be interpreted as indicating that this edge forms a 'bridge'  between two sets of vertices.
 
-In turn, this curvature controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally, although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$ (REF). 
+In turn, this curvature controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally, although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$. 
 
 In summary, we expect that graphs with low Cheeger values should suffer more from over-squashing.
 
 #### Results
 
+### 3.5 Qualitative investigation of graph characteristics 
 
-### Does rewiring the graph to remove bottlenecks improve performance?
+
+### 3.6 Does rewiring the graph to remove bottlenecks improve performance?
 
 Plan:
 * can prove that oversquashing is a problem based on the application of a problem that is designed to fix oversquashing.
 
-## Conclusions
+## 4. Conclusions
 
-Plan:
-* Go through which experiments indicated that there was LRI in the data.
+The goals of this study were to replicate the results of the original study, to provide a better characterisation of which of the three LRI factors were most important and finally to assess whether the LRGB was indeed a good benchmark for LRI. The first of these was met unequivocally, whereas the other two deserve more qualified discussion.
+
+### 4.1 Which LRI factors are most prevalent?
+The only LRI factor we found unequivocal evidence for was 'under-reaching'.We showed that the predictions of transformer models were heavily influenced by distant nodes. Moreover, we showed that distant nodes (up to 8 nodes away) had a meaningful influence on the accuracy of those predictions. This shows that our method can be used to place a lower bound on the length of interaction on a candidate LRI dataset, although this is only possible on node-level tasks.
+
+We found little evidence for over-squashing in the Pascal dataset. If this had been present, we expected that we would find a relationship between the Cheeger constant and the relative accuracies of the transformer and GCN. Moreover, our qualitative exploration of the dataset made us doubt that over-squashing could be meaningfully captured by any simple topological statistics.
+
+
+### 4.2 Is the LRGB a good benchmark?
+
+We can give a qualified yes: it's true that there is useful information in distant nodes, and a model can improve its performance on this dataset by leveraging that information.
+
+However, there are two important caveats: the first is that a model can drastically improve its performance even while only focussing on local information. Therefore, we recommend applying the method from section 3.3 to quantify the impact of nodes at different distances before linking increased accuracy to improved modelling of LRI.
+
+The second is that we have seen no evidence to believe that over-squashing is an issue in these datasets. Overall, we believe there needs to be a more compelling argument made linking properties of these datasets to the theoretical causes of oversquashing before this is considered a 'benchmark' for oversquashing.
 
 
 # 5. Individual Contributions
 
-*__Nik Mather__ performed the experiments relating shortest path distance to influence, F1-score and accuracy (although he relied on Madhura and Avik to implement the influence score), assisted in writing the code for the Cheeger value experiments, and wrote most of th blogpost.
+*__Nik__ performed the experiments relating shortest path distance to influence, F1-score and accuracy (although he relied on Madhura and Avik to implement the jacobian for the influence score), assisted in writing the code for the Cheeger value experiments, and wrote most of the blogpost.
 
 
 # 6. References
@@ -241,3 +260,6 @@ Bronstein, Michael M., et al. "Geometric deep learning: Grids, groups, graphs, g
 
 <a id="14">[14]</a>
 Dwivedi, Vijay Prakash and Xavier Bresson. “A Generalization of Transformer Networks to Graphs.” ArXiv abs/2012.09699 (2020): n. pag.
+
+<a id="15">[15]</a>
+Lundberg, S. M., & Lee, S. I. (2017). A unified approach to interpreting model predictions. Advances in neural information processing systems, 30.
