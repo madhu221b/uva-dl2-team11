@@ -119,9 +119,16 @@ We found that transformers do see a greater influence from distant nodes than lo
 
 ### 3.3 Are distant nodes important for achieving good accuracy?
 
-While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note in (TABLE REF) that the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
+While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note that in section 3.1, the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
 
-To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. If there is useful information in distant nodes, we expect to see a larg e drop in accuracy when we replace the features of those nodes. 
+To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $\vec{x}_d$ denote all the input features, at distance $d \in {1, ... D}$from the target node. Also, denote $x_{\bar{d}} = { x_i, i \neq d}. Then we measure the accuracy of the model $f_d(x)$ given by:
+
+$$ f_{d}(x) =  E_{X_1, ..., X_D}[f(x) | X_{\bar{d}}] $$
+$$= E_{X_d |X_{\bar{d}}}  ..., X_D}[f(x)] $$
+$$ \approx E_{X_d}[f(x)] \approx f(x_{\bar{d}}, E_{X_d}) $$
+
+Where the last two steps assume the input features are independent, and that the model is locally linear. The argument was adapted from [14].
+Therefore, if there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes. 
 
 The results are reported below, where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
 
@@ -225,3 +232,6 @@ Alon, Uri, and Eran Yahav. "On the bottleneck of graph neural networks and its p
 
 <a id="13">[13]</a>
 Bronstein, Michael M., et al. "Geometric deep learning: Grids, groups, graphs, geodesics, and gauges." arXiv preprint arXiv:2104.13478 (2021).
+
+<a id="14">[14]</a>
+Lundberg, S. M., & Lee, S. I. (2017). A unified approach to interpreting model predictions. Advances in neural information processing systems, 30.
