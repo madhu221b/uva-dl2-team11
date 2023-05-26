@@ -1,6 +1,6 @@
 # 1. Introduction
 
-## 1.1 Graph Neural Networks
+##  Graph Neural Networks
 
 A great number of systems in different branches of science can be described as sets, and relationships between the members of a set. For example, molecules are sets of atoms, which are related by their bonds; images are sets of pixels that are related by their relative positions. 
 
@@ -13,10 +13,6 @@ Many neural networks that operate on graphs work within the ‘message passing�
 3. [[12]](#12) identified <ins>‘over-squashing’</ins>, where the graph topology induces bottlenecks that prevent the flow of information between different parts of the graph. Because each message in an MPNN has a fixed capacity, nodes with many neighbours may not be able to pass on all the useful information that they have access to. LRI tasks should therefore be harder to solve in topologies that have strict bottlenecks, because essential information is more likely to be lost while passing from node to node.
 
 In the rest of the text, we refer to these three phenomena as the 'factors' that characterise the LRI problem.
-
-### 1.2 Related work
-
-A number of methods have 
 
 # 2 The Long Range Graph Benchmark
 
