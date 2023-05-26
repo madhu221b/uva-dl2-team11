@@ -37,7 +37,7 @@ The central claim of the paper is that the above datasets provide a benchmark fo
 In this section, we describe the arguments that the authors make in support of their claim, and discuss their strengths and weaknesses.
  
 
-## 2.3 LRI by Construction
+### 2.2.1 LRI by Construction
 
 The authors argue that they construct their datasets in such a way that acheiving good performance on them requires solving the LRI problem. In one case, this is convincing: the PCQM-Contact dataset only considers interactions between distant nodes, and so cannot be solved by local information alone.
 
@@ -47,7 +47,7 @@ Similarly, they argue that because 3D folding structure is important in determin
 
 In summary, there isn't a strong _a priori_ reason to believe that any of the datasets are characterised by LRI, except for PCQM-Contact.
 
-## 2.4 Relative outperformance of transformer methods
+### 2.2.2 Relative outperformance of transformer methods
 
 'Graph Transformer' architectures are a type of graph neural network which ignore the original input graph in favour of a fully connected one  [[14]](#14). Doing so allows them to sidestep each of the issues that characterise LRI problems. Since pairwise interactions are modeled between all nodes, there is no danger of under-reaching. Additionally, this also means we aren't compelled to include as many message passing layers, preventing over-smoothing. Finally, since there is a direct path between any pair of nodes in a fully connected graph, no other node can serve as a bottleneck, preventing over-smoothing. We will sometimes refer to GNNs that aren't transformers as 'local' methods.
 
@@ -56,7 +56,7 @@ The authors showed that transformer architectures outperformed other methods in 
 Arguably, we should look for more direct evidence that improved performance was due to an ability to leverage long range information.
 
 
-## 2.5 Graph statistics
+### 2.2.3 Graph statistics
 The authors generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claim that high values of these statistics indicate LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem. A graph may have a large number of nodes, and a complex topology, but it doesn't follow that a task defined on that graph can only be solved by modeling global interactions. For example, consider the case where our task is to calculate the sum of the hidden features in nodes - this isn't dependent on graph topology. Therefore, we think these graph statistics need to be more directly linked with model performance before we can conclude that they are proof of LRI in the datasets.
 
 
@@ -72,11 +72,14 @@ Our project attempts to address the weaknesses we identified in each of the abov
 Because we had limited computational resources, we chose to focus on the PascalVOC-SP and COCO-SP datasets. Because this is a node classification dataset, it allows us to investigate long range interactions in ways that are impossible for graph level tasks. Also, we employ the models from geometric deep learning domain to see how they perform on these datasets. The issue however we faced is that the molecular datasets - PCQM-Contact, Peptides-func and Peptides-struct have no positional information hence we stick with the above two datasets as they have positional information associated with each node. 
 
 # 4. Experiments
-## 4.1 Reproducing Results:
 
-## 4.2 Alternative approaches to mitigate LRI problem:
+From the paper, we opt to train GCN and Transformer with Laplacian Positional Encodings (Transformer+LapPE) as representatives for 'local' and 'non-local' methods respectively on both the PascalVOC-SP and COCO-SP dataset. This both replicated the original models, and gave us access to a set of models that we could use to test hypotheses about the presence of LRI in the dataset.
 
-### 4.2.1 Stochastic Discrete Ricci Flow (SDRF) algorithm 
+Additionally, we look at addressing the LRI problem through other approaches in Section 4. In this process, we also experiment with few other models. For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. We also deviate from the original paper in using a cosine learning rate scheduler rather than the default 'reduce on plateau' scheduler, because we faced compatibility issues when using the latter. This does not affect our results substantively, but accounts for minor differences between our results and the original paper.
+
+## 4.1 Alternative approaches to mitigate LRI problem:
+
+### 4.1.1 Stochastic Discrete Ricci Flow (SDRF) algorithm 
 
 Since, one of the main problem of LRI in MP-GNNs is over-squashing, a quick survey revealed that many of the existing literature try addressing this issue with help of topological change in the graphs using rewiring methods. More recently, [[2]](#2) proposed a curvature-based rewiring method for graphs based on Ricci curvature in Riemannian geometry. They introduce this as the Stochastic Discrete Ricci Flow (SDRF) algorithm which adds new edges in places where a strongly negative curve exists in order to smoothen out 'bottlenecks'.
 
@@ -91,7 +94,7 @@ We implement the SDRF algorithm to rewire graphs in the PascalVOC-SP dataset. Si
 
 The results however show that rewiring actually negatively affects the performance of GCN model. We attribute this outcome as the nature of the data which are 2D image superpixel graphs. Even though there might exist bottlenecks in this space, connecting and passing information between disparate patches of an image might truly confuse the trained model. The f1 scores of the Transformer+LapPE model remains the same throughout, which was expected as this model fully-connects the graph regardless.
 
-### 4.2.2 Geometric deep learning: 
+### 4.1.2 Geometric deep learning: 
 Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore architectures where instead of changing the semantic meaning of the graph by adding edges, we can make the features of the graph itself more expressive. One such domain where we can make the message passing approach of GNNs more expressive is Geometric Deep Learning (GEDL). 
    We specifically explore three GEDL models - E(n)-Invariant, E(n)-Equivariant [[16]](#16) and E(3) Steerable GNN [[17]](#17). 
 
@@ -111,11 +114,7 @@ Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore a
 
 
 
-### Which models perform best on the Pascal Dataset?
-
-We began by training a number of models on the Pascal VOC dataset. This both replicated the original models, and gave us access to a set of models that we could use to test hypotheses about the presence of LRI in the dataset. 
-
-For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. We also deviate from the original paper in using a cosine learning rate scheduler rather than the default 'reduce on plateau' scheduler, because we faced compatibility issues when using the latter. This does not affect our results substantively, but accounts for minor differences between our results and the original paper.
+### Which models perform best?
 
 As with the original study, we found that a transformer architecture performed better than all other models. However, we also tested a variety of MPNN models that explicitly encoded geometric information. We felt that these were a 'fairer' test of the capacity of a message passing network, because the geometric relationship between two nodes is more semantically meaningful than the one imposed by the arbitrary topology of the superpixel boundary graph. We found that these models gave comparable performance  to the transformer, even with as few as two message passing layers.
 
