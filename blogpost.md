@@ -92,8 +92,9 @@ The results however show that rewiring actually negatively affects the performan
 
 ### 4.1.2 Geometric deep learning: E(n)-Invariant and E(n)-Equivariant GNN
   Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore architectures where instead of changing the semantic meaning of the graph by adding edges, we can make the features of the graph itself more expressive. One such domain where we can make the message passing approach of GNNs more expressive is Geometric Deep Learning (GEDL). 
-   We specifically explore three GEDL models - E(n)-Invariant, E(n)-Equivariant [[16]](#16) and E(3) Steerable GNN [[17]](#17). We discuss the first two models in brief now and E(3) Steerable GNN in the next section. The 14-dimensional node embedding of the long-range PascalVOC-SP and COCO-SP datasets have 12-dimensional information related to the color of the node pixel while the other 2-dimensions convey the $x$ and $y$ coordinates of the node. Instead of treating these last two features as part of the node's "normal" feature, we treat it as the node's "positional" feature. In the case of E($n$)-invariant and E($n$)-equivariant architectures, we use type-0 representations (i.e. relative distances) to define the geometry of the graph.  In case of E($n$)-invariant, the messages are conditioned on distance and these are used to update the node embeddings layer by layer. While for E($n$) equivariant architecture, we also update the positional/coordinate embeddings of the node. Figure [Figure 3](#fig3) highlights the architecture along with the message passing equations.
-
+   We specifically explore three GEDL models - E(n)-Invariant, E(n)-Equivariant [[16]](#16) and E(3) Steerable GNN [[17]](#17). We discuss the first two models in brief now and E(3) Steerable GNN in the next section. The 14-dimensional node embedding of the long-range PascalVOC-SP and COCO-SP datasets have 12-dimensional information related to the color of the node pixel while the other 2-dimensions convey the $x$ and $y$ coordinates of the node. Instead of treating these last two features as part of the node's "normal" feature, we treat it as the node's "positional" feature. In the case of E($n$)-invariant and E($n$)-equivariant architectures, we use type-0 representations (i.e. relative distances) to define the geometry of the graph.  In case of E($n$)-invariant, the messages are conditioned on distance and these are used to update the node embeddings layer by layer. While for E($n$) equivariant architecture, we also update the positional/coordinate embeddings of the node. [Figure 3](#fig3) highlights the architecture along with the message passing equations.
+   In case of invariant function, information is removed hence the orientation can no longer be reconstructed from the output. Similarly, an equivariant function preserves information, since all geometric information is preserved throughout the network. We hope that E($n$)-invariant and E($n$)-equivariant architectures add a level of additional expressivity over the vanilla GCN, so they can perform better than GCN. This result is affirmed by our finding as seen in [Table 1](#tab1) and [Table 2](#tab2). Also, it makes sense that  E($n$)-equivariant network outperforms  E($n$)-invariant as E($n$)-equivariant is more expressive. 
+   
 ### 4.1.3 Geometric deep learning: E(3) Steerable GNN
 
 @Aditya 
@@ -117,7 +118,7 @@ A brief description of the models, and their performance, is given below:
 
 | <img width="475" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/c1cd197b-6a44-4864-98e1-e007cc9985d9">  | <img width="475" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/e03ffad4-3177-4063-a441-d6c07c947a36"> | 
 | -------- | -------- |
-|  Table 1: Results for Pascal-SP dataset   | Table 2: Results for COCO-SP dataset  |  
+|  <a id="tab1"> Table 1 </a>: Results for Pascal-SP dataset   |<a id="tab2">Table 2 </a>: Results for COCO-SP dataset  |  
 
 Recall that our second goal above was to see whether improvements on the LRGB were caused by an improved ability to model long range interactions. From this point of view, these results are worrisome, because we found that a model that could only use local information - which is by definition not capable of modelling LRI - was nearly as performant as one that could model interactions between all nodes.
 
@@ -200,7 +201,7 @@ In summary, we expect that graphs with low Cheeger values should suffer more fro
 ### 3.5 Qualitative investigation of graph characteristics 
 
 
-### 3.6 Does rewiring the graph to remove bottlenecks improve performance?
+
 
 Plan:
 * can prove that oversquashing is a problem based on the application of a problem that is designed to fix oversquashing.
