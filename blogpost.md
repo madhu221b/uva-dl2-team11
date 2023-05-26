@@ -121,7 +121,7 @@ We found that transformers do see a greater influence from distant nodes than lo
 
 While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note that in section 3.1, the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
 
-To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $ x_d $ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node.
+To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $ x\_d $ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node.
 
 Also, denote $ x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
 
