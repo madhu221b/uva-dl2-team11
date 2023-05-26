@@ -98,11 +98,10 @@ If the Pascal dataset was truly characterised by LRI, we should expect two thing
 - for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
 - for local architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
 
-To test these hypotheses, we used __influence functions__ (REF) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
+To test these hypotheses, we used __influence functions__ [4] to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
 
-__TODO__ - Madhura/Avik can you guys double check I have this right?
 
-$$ | \frac{\delta \sum_i y_u^{(i)}}{\delta h_v^{(0)} } | $$
+$$ \sum_i | \frac{\delta  y_u^{(i)}}{\delta h_v^{(0)} } | $$
 
 Where the individual gradients are obtained empirically through the Pytorch autograd system.
 
