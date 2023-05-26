@@ -100,7 +100,6 @@ If the Pascal dataset was truly characterised by LRI, we should expect two thing
 
 To test these hypotheses, we used __influence functions__ [4] to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
 
-
 $$ \sum_i | \frac{\delta  y_u^{(i)}}{\delta h_v^{(0)} } | $$
 
 Where the individual gradients are obtained empirically through the Pytorch autograd system.
@@ -113,16 +112,13 @@ The results of this analysis are shown below. The x-axis shows various path leng
 
 ![img.png](assets/normalised_influence_scores.png)
 
-
-We found that transformers do see a greater influence from distant nodes than local architectures. Surprisingly, we 
+Overall, we found that transformers do see a greater influence from distant nodes than local architectures.
 
 ### 3.3 Are distant nodes important for achieving good accuracy?
 
 While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note that in section 3.1, the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
 
-To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $ x\_d $ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node.
-
-Also, denote $ x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
+To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $ x\_d $ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node. Also, denote $ x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
 
 $$ f_{d}(x) =  E_{X_1, ..., X_D}[f(x) | X_{\bar{d}}] $$
 $$= E_{X_d |X_{\bar{d}}}  ..., X_D}[f(x)] $$
