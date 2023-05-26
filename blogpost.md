@@ -165,7 +165,7 @@ The results are reported below, where the y-axis shows either the accuracy or ma
 
 | ![img.png](assets/noising_experiment.png) | ![img.png](assets/noising_relative_f1_score.png)| 
 | -------- | -------- |
-|  Label the figure   | Label the figure   |  
+|  Figure 3.3.1 Relative accuracy obtained when replacing node features at different distances with baseline value    | Figure 3.3.2 Relative F1 score obtained when replacing node features at different distances with baseline value  |  
 
 There are a number of interesting observations from this graph:
 * The transformer does leverage distant nodes more effectively than the GCN, even at distances that the GCN can 'reach'. This may indicate that the GCN is suffering from over-squashing, although it is not conclusive.
