@@ -17,6 +17,7 @@ pip install ogb wandb pytorch_lightning yacs
 pip install torch_scatter torch_sparse 
 pip install tensorboardX
 pip install numba
+pip install e3nn
 ```
 
 ### Training the Graph models
