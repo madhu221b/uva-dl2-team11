@@ -77,10 +77,18 @@ Because we had limited computational resources, we chose to focus on the PascalV
 
 ### 4.1.1 Stochastic Discrete Ricci Flow (SDRF) algorithm 
 
+Since, one of the main problem of LRI in MP-GNNs is over-squashing, a quick survey revealed that many of the existing literature try addressing this issue with help of topological change in the graphs using rewiring methods. More recently, [[15]](#15) proposed a curvature-based rewiring method for graphs based on Ricci curvature in Riemannian geometry. They introduce this as the Stochastic Discrete Ricci Flow (SDRF) algorithm which adds new edges in places where a strongly negative curve exists in order to smoothen out 'bottlenecks'.
+
+We implement the SDRF algorithm to rewire graphs in the PascalVOC-SP dataset. Since, the algorithm only takes into account the graph topology and remains agnostic to other features, there are no edge features for the new edges. Hence, in order to have a fair comparison, we first trained the GCN and Transformer+LapPE model on graphs with their edge features removed (i.e replacing with ones tensor) and obtained a baseline f1 performance. We then proceeded with adding a certain percentage of total edges in each graph of the test dataset using SDRF algorithm and benchmarked the trained model. To determine if rewiring with SDRF is beneficial, we compare the resulting f1 scores with baseline.
 
 
-@avik discuss your setup, results, and then ill use your last line as the prerequisite for using geometric deep models
+| <img width="498" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/37116622/c957e127-98d5-4209-88f0-a1a5b919b76e"> | <img width="488" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/37116622/a669f6ae-57de-4ca2-bbc3-40cc7b8cbfa8"> |
+| -------- | -------- |
+|  Figure 1: Obtained f1 score on adding a certain ratio of original edges for GCN.  | Figure 2: Obtained f1 score on adding a certain ratio of original edges for Transformer+LapPE. |
 
+**Note** - baseline f1 is the case when no edges are added i.e. ratio 0.0
+
+The results however show that rewiring actually negatively affects the performance of GCN model. We attribute this outcome as the nature of the data which are 2D image superpixel graphs. Even though there might exist bottlenecks in this space, connecting and passing information between disparate patches of an image might truly confuse the trained model. The f1 scores of the Transformer+LapPE model remains the same throughout, which was expected as this model fully-connects the graph regardless.
 
 ### 4.1.2 Geometric deep learning: E(n)-Invariant and E(n)-Equivariant GNN
 
@@ -99,7 +107,7 @@ As with the original study, we found that a transformer architecture performed b
 
 A brief description of the models, and their performance, is given below:
 
-| <img width="498" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/c1cd197b-6a44-4864-98e1-e007cc9985d9">  | <img width="498" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/e03ffad4-3177-4063-a441-d6c07c947a36"> | 
+| <img width="475" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/c1cd197b-6a44-4864-98e1-e007cc9985d9">  | <img width="475" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/e03ffad4-3177-4063-a441-d6c07c947a36"> | 
 | -------- | -------- |
 |  Table 1: Results for Pascal-SP dataset   | Table 2: Results for COCO-SP dataset  |  
 
@@ -233,3 +241,6 @@ Bronstein, Michael M., et al. "Geometric deep learning: Grids, groups, graphs, g
 
 <a id="14">[14]</a>
 Dwivedi, Vijay Prakash and Xavier Bresson. “A Generalization of Transformer Networks to Graphs.” ArXiv abs/2012.09699 (2020): n. pag.
+
+<a id="15">[15]</a>
+Jake Topping, Francesco Di Giovanni, Benjamin Paul Chamberlain, Xiaowen Dong, Michael M. Bronstein: Understanding over-squashing and bottlenecks on graphs via curvature. ICLR 2022
