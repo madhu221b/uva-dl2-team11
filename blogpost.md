@@ -110,7 +110,7 @@ Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore a
 | -------- |
 |  <a id="fig3"> Figure 3 </a>: E(n)-Invariant and E(n)-Equivariant Architecture  |
 
-| ![](assets/segnn.png)|
+| ![image](https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/7e5a47b3-2cc5-4149-a354-f5ee27c28be7)|
 | -------- |
 |  <a id="fig4"> Figure 4 </a>: SEGNN Architecture  |
 
