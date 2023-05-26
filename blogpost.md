@@ -16,9 +16,6 @@ Third, [[12]](#12) identified ‘over-squashing’, where the graph topology ind
 
 In the rest of the text, we refer to these three phenomena as the 'factors' that characterise the LRI problem.
 
-### 1.2 Related work
-
-A number of methods have 
 
 ## 1.3 The Long Range Graph Benchmark
 
@@ -38,7 +35,6 @@ The central claim of the paper is that the above datasets provide a benchmark fo
 1. At least one of the three factors that we described as characterising LRI, under-reaching, over-smoothing and over-squashing, should be present in the dataset.
 2. The majority of improvements in model performance on the benchmark should come from solving one of the above problems.
 
-
 In this section, we describe the arguments that the authors make in support of their claim, and discuss their strengths and weaknesses.
  
 
@@ -48,7 +44,7 @@ The authors argue that they construct their datasets in such a way that acheivin
 
 In the other cases, the justification is murkier. For example, they argue that classifying superpixels in the COCO and Pascal datasets is inherently long range, but they provide no argument for why this is the case.
 
-Similarly, they argue that because 3D folding structure is important in determining peptide properties, and because 3D structures determine . However, it's not clear whether how this dependence on 3D geometry can be understood in terms of over-squashing and over-smoothing, which have only been characterised as dependent on the graph topology. 
+Similarly, they argue that because 3D folding structure is important in determining peptide properties, and because 3D structures determine . However, it's not clear whether how this dependence on 3D geometry can be understood in terms of over-squashing and over-smoothing, which have only been characterised as dependent on the graph topology.
 
 In summary, there isn't a strong _a priori_ reason to believe that any of the datasets are characterised by LRI, except for PCQM.
 
@@ -56,7 +52,7 @@ In summary, there isn't a strong _a priori_ reason to believe that any of the da
 
 'Transformer' architectures are a type of graph neural network which ignore the original input graph in favour of a fully connected one. Doing so allows them to sidestep each of the issues that characterise LRI problems. Since pairwise interactions are modelled between all nodes, there is no danger of under-reaching. Additionally, this also means we aren't compelled to include as many message passing layers, preventing over-smoothing. Finally, since there is a direct path between any pair of nodes in a fully connected graph, no other node can serve as a bottleneck, preventing over-smoothing. We will sometimes refer to GNNs that aren't transformers as 'local' methods.
 
-The authors showed that transformer architectures,  outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance.
+The authors showed that transformer architectures with Laplacian positional encodings outperformed all other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance.
 
 Arguably, we should look for more direct evidence that improved performance was due to an ability to leverage long range information.
 
@@ -79,7 +75,7 @@ Because we had limited computational resources, we chose to focus on the Pascal 
 
 # 3. Experiments
 
-### Which models perform best on the Pascal Dataset?
+### 3.1 Which models perform best on the Pascal Dataset?
 
 We began by training a number of models on the Pascal VOC dataset. This both replicated the original models, and gave us access to a set of models that we could use to test hypotheses about the presence of LRI in the dataset. 
 
@@ -89,16 +85,13 @@ As with the original study, we found that a transformer architecture performed b
 
 A brief description of the models, and their performance, is given below:
 
-# TODO add number of layers column
-#TODO add column describing models?
-
 ![img.png](assets/summarised_data/model_summary.png)
 
 Recall that our second goal above was to see whether improvements on the LRGB were caused by an improved ability to model long range interactions. From this point of view, these results are worrisome, because we found that a model that could only use local information - which is by definition not capable of modelling LRI - was nearly as performant as one that could model interactions between all nodes.
 
 TODO more discussion of the JK models? These are interesting because they are explicitly done to help oversmoothing.
 
-### Is performance correlated with increased importance of distant nodes?
+### 3.2 Is performance correlated with increased importance of distant nodes?
 
 
 If the Pascal dataset was truly characterised by LRI, we should expect two things:
@@ -124,7 +117,7 @@ The results of this analysis are shown below. The x-axis shows various path leng
 
 We found that transformers do see a greater influence from distant nodes than local architectures. Surprisingly, we 
 
-### Are distant nodes important for achieving good accuracy?
+### 3.3 Are distant nodes important for achieving good accuracy?
 
 While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note in (TABLE REF) that the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
 
@@ -143,7 +136,7 @@ There are a number of interesting observations from this graph:
 
 
 
-### Does model performance correlate with graph qualities that predict over-squashing?
+### 3.4 Does model performance correlate with graph qualities that predict over-squashing?
 
 Recall that the original LRGB paper claimed that their datasets were good benchmarks for LRI based on three statistics of the graphs they contained: the average shortest path distance between nodes in the graph, the graph diameter, and the number of nodes. 
 
@@ -165,21 +158,29 @@ In summary, we expect that graphs with low Cheeger values should suffer more fro
 
 #### Results
 
+### 3.5 Qualitative investigation of graph characteristics 
 
-### Does rewiring the graph to remove bottlenecks improve performance?
+
+### 3.6 Does rewiring the graph to remove bottlenecks improve performance?
 
 Plan:
 * can prove that oversquashing is a problem based on the application of a problem that is designed to fix oversquashing.
 
 ## Conclusions
 
-Plan:
-* Go through which experiments indicated that there was LRI in the data.
+The goals of this study were to replicate the results of the original study, to provide a better characterisation of which of the three LRI factors were most important and finally to assess whether the LRGB was indeed a good benchmark for LRI. The first of these was met unequivocally, whereas the other two deserve more qualified discussion.
+
+### Which factors were most important
+First, we found that 
+
+Second, of the
+
+
 
 
 # 5. Individual Contributions
 
-*__Nik Mather__ performed the experiments relating shortest path distance to influence, F1-score and accuracy (although he relied on Madhura and Avik to implement the influence score), assisted in writing the code for the Cheeger value experiments, and wrote most of th blogpost.
+*__Nik__ performed the experiments relating shortest path distance to influence, F1-score and accuracy (although he relied on Madhura and Avik to implement the jacobian for the influence score), assisted in writing the code for the Cheeger value experiments, and wrote most of the blogpost.
 
 
 # 6. References
