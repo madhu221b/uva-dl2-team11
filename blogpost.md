@@ -97,9 +97,9 @@ The results however show that rewiring actually negatively affects the performan
 ### 4.1.3 Geometric deep learning: E(3) Steerable GNN
 
 @Aditya 
-| <img width="1212" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/57d62a49-392e-4933-9ff1-f10e813f235c"> | <img width="488" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/37116622/a669f6ae-57de-4ca2-bbc3-40cc7b8cbfa8"> |
+| ![](assets/ennegnn.png| <img width="488" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/37116622/a669f6ae-57de-4ca2-bbc3-40cc7b8cbfa8"> |
 | -------- | -------- |
-|  Figure 3: E(n)-Invariant and E(n)-Equivariant Architecture  | Figure 4: E(3) Steerable Architecture |
+|  <a id="fig3"> Figure 3 </a>: E(n)-Invariant and E(n)-Equivariant Architecture  | Figure 4: E(3) Steerable Architecture |
 
 
 
