@@ -242,12 +242,11 @@ We also measured the ratio between transformer accuracy against each model's acc
 ## 5.3 Qualitative investigation of graph characteristics 
 To affirm our hypothesis, we conducted a qualitative analysis. We sampled graphs from different bins of the average shortest path-Cheeger constant distribution to examine their bottle neck behaviour. We have indeed seen that the relationship between Cheeger constant and average shortest path accords with our theory.
 When we fix the Cheeger constant between $0.0667$ and $0.133$, and order the graph's average shortest path from top to bottom, we get the following:
-![img.png](assets/graph0.png)
-![img.png](assets/graph1.png)
-![img.png](assets/graph2.png)
-![img.png](assets/graph3.png)
-![img.png](assets/graph4.png)
-![img.png](assets/graph5.png)
+| ![img.png](assets/graph0.png) | ![img.png](assets/graph1.png) | ![img.png](assets/graph2.png) |
+| -------- | -------- | -------- |
+|  ![img.png](assets/graph3.png) | ![img.png](assets/graph4.png) | ![img.png](assets/graph5.png) |
+
+
 
 We began seeing graphs with sparse connections along average shortest path 6.93. 
 ![img.png](assets/graph_distro_amount.png)
