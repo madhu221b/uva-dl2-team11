@@ -106,9 +106,9 @@ Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore a
 #### E(3) Steerable GNN
 
 @Aditya 
-| ![](assets/ennegnn.png)|
-| -------- |
-|  <a id="fig3"> Figure 3 </a>: E(n)-Invariant and E(n)-Equivariant Architecture  |
+| ![](assets/ennegnn.png)| 
+| -------- | 
+|  <a id="fig3"> Figure 3 </a>: E(n)-Invariant and E(n)-Equivariant Architecture  |  
 
 | ![image](https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/7e5a47b3-2cc5-4149-a354-f5ee27c28be7)|
 | -------- |
@@ -119,9 +119,13 @@ Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore a
 As with the original study, we found that a transformer architecture performed better than all other models. However, we also tested a variety of MPNN models that explicitly encoded geometric information. We felt that these were a 'fairer' test of the capacity of a message passing network, because the geometric relationship between two nodes is more semantically meaningful than the one imposed by the arbitrary topology of the superpixel boundary graph. We found that these models gave comparable performance  to the transformer, even with as few as two message passing layers.
 
 
-| <img width="555" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/8a49f585-8e3d-440d-8f37-b86b17286e12">  | <img width="475" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/e03ffad4-3177-4063-a441-d6c07c947a36"> | 
-| -------- | -------- |
-|  <a id="tab1"> Table 1 </a>: Results for PascalVOC-SP dataset   |<a id="tab2">Table 2 </a>: Results for COCO-SP dataset  |  
+| <img width="555" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/8a49f585-8e3d-440d-8f37-b86b17286e12"> | <img width="475" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/e03ffad4-3177-4063-a441-d6c07c947a36"> | 
+| -------- | -------- | 
+|  <a id="tab1"> Table 1 </a>: Results for PascalVOC-SP dataset | <a id="tab2">Table 2 </a>: Results for COCO-SP dataset  |
+
+| <img width="502" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/6073aeef-4f40-4aec-a7a1-5419396e657e"> |
+| ------------- | 
+| <a id="tab3">Table 3 </a>: Results for Jumping Knowledge Representations (JK) for PascalVOC-SP dataset |
 
 Recall that our second goal above was to see whether improvements on the LRGB were caused by an improved ability to model long range interactions. From this point of view, these results are worrisome, because we found that a model that could only use local information - which is by definition not capable of modelling LRI - was nearly as performant as one that could model interactions between all nodes.
 
