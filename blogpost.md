@@ -211,21 +211,12 @@ In summary, we expect that graphs with low Cheeger values should suffer more fro
 ### 3.5 Do average shortest path and graph diameter correlate with model performance?
 We observed no correlation between the relative performance of any of the models and the average shortest path nor the diameter. This affirms our suspicion that this statistic is not indicative of the presence of LRI in the dataset.
 
-Accuracy against ASP:
-| Model | Pearson | Spearman | Kendall |
-| --- | --- | --- | --- |
-| GCN | -0.014 | -0.003 | -0.002 |
-| EGNN | -0.006 | -0.009 | -0.006 |
-| ENN | -0.015 | -0.012 | -0.008 |
-| Transformer | -0.016 | -0.014 | -0.009 |
 
-Accuracy against diameter:
-| Model | Pearson | Spearman | Kendall |
-| --- | --- | --- | --- |
-| GCN | -0.017 | -0.009 | -0.006 |
-| EGNN | -0.006 | -0.010 | -0.007 |
-| ENN | -0.014 | -0.016 | -0.011 |
-| Transformer | -0.013 | -0.018 | -0.013 |
+| <img width="457" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/d82a26ae-4c3d-4433-a366-05bc82f3c638"> | <img width="458" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/8d19afaf-3792-4cb8-bbce-6eda2e18123b"> | 
+| -------- | -------- | 
+|  <a id="tab4"> Table 4 </a>: Accuracy against ASP | <a id="tab5">Table 5 </a>: Accuracy against diameter |
+
+
 
 However, by plotting the distribution of average shortest path
 against the Cheeger constant and measuring the correlation between the distribtuion and the performance of the models,
@@ -234,9 +225,9 @@ we found a positive correlation between the distribution and the performance in 
 | Model | Pearson | Spearman | Kendall |
 | --- | --- | --- | --- |
 | GCN | 0.373 | 0.383 | 0.218 |
-| EGNN | 0.514 | 0.628 | 0.41 |
-| ENN | 0.416 | 0.343 | 0.177 |
-| Transformer | - 0.102 | 0.037 | -0.006 |
+|  E(n)-Equivariant | 0.514 | 0.628 | 0.41 |
+|  E(n)-Invariant | 0.416 | 0.343 | 0.177 |
+| Transformer+LapPE | - 0.102 | 0.037 | -0.006 |
 
 ![img.png](assets/distribution_cheeger_asp.png)
 
