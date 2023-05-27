@@ -4,7 +4,7 @@
 
 A great number of systems in different branches of science can be described as sets, and relationships between the members of a set. For example, molecules are sets of atoms, which are related by their bonds; images are sets of pixels that are related by their relative positions. 
 
-It's common to describe such systems mathematically as a 'graph'. Formally, a graph G is a pair of sets $(V, E)$ such that $E = {(v_i, v_j) | v_i, v_j \in V}. $V$ is referred to as the vertices or nodes, and $E$ is referred to as the edges. The 'neighbours' of a node $v \in V$ are the set of nodes that are connected to $v$ by an edge. Because this structure is so common, there has been considerable interest in designing neural network architectures that can perform inference effectively on graphs. 
+It's common to describe such systems mathematically as a 'graph'. Formally, a graph G is a pair of sets $(V, E)$ such that $E = {(v_i, v_j) | v_i, v_j \in V}$. $V$ is referred to as the vertices or nodes, and $E$ is referred to as the edges. The 'neighbours' of a node $v \in V$ are the set of nodes that are connected to $v$ by an edge. Because this structure is so common, there has been considerable interest in designing neural network architectures that can perform inference effectively on graphs. 
 
 Many neural networks that operate on graphs work within the ‘message passing’ paradigm, where each layer of the network is responsible for aggregating ‘messages’ - functions of the node features - that are passed from a node to its neighbours [[13]](#13). Adding depth to the network allows information from more distant nodes to be combined, as each subsequent layer allows information to be passed one edge further than the previous one. This approach is a powerful one: by designing the network to process only local neighbourhoods, we allow weight sharing between all neighborhoods and allow the networks to process graphs with arbitrary sizes and topologies. However, this focus on local information can make it difficult to apply the Message Passing framework when interactions between distant nodes are important. We describe such datasets as exhibiting ‘long range interaction’ (LRI).  Recent work has shown the message passing paradigm can fail in some surprising ways on LRI problems.
 
@@ -102,7 +102,7 @@ To test these hypotheses, we used __influence functions__ (REF) to quantify the 
 
 __#TODO__ - Madhura/Avik can you guys double check I have this right?
 
-$$ | \frac{\delta \sum_i y_u^{(i)}{\delta }  | h_v^{(0)} | $$
+$$ | \frac{\delta \sum_i y_u^{(i)}}{\delta }  | h_v^{(0)} | $$
 
 Where the individual gradients are obtained empirically through the Pytorch autograd system.
 
@@ -146,9 +146,16 @@ While it's not clear that the statistics we mentioned are related to over-squash
 
 Recently [2] has shown that the degree of over-squashing can be measured by spectral properties of a graph. The Cheeger constant $h_G$ of a graph G is defined as:
 
-$$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{|\delta S |}{\min vol(S), vol(V/S)}$$
+$$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{\lvert\delta S \rvert}{\min vol(S), vol(V/S)}$$
 
-where the _boundary_  $|\delta S |$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with empty intersection, $S$ and $V\S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets.
+where the _boundary_  $\lvert\delta S \rvert$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S\}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with sparse intersection, $S$ and $V\setminus S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets.
+
+Notice that low Cheeger constant does not necessarily imply a bottlenecking effect.
+A 'stretched' out graph
+
+![img.png](assets/high_asp_low_cheeger_graph.png)
+
+would have a low Cheeger constant but high average shortest path. However, a low average shortest path would imply that there are many pairs of nodes that are close together, and so we would expect that the graph is not stretched out and that the graph would have sparse connections between clusters. Therefore, we expect that a low Cheeger constant and low average shortest path together to be indicative of over-squashing.
 
 [2] showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that describes how 'bottlenecked' the neighbourhood of each edge in the graph is in terms of the number of cycles it appears. The definition is too lengthy to reproduce here, but negative values for a given edge $(i,j)$ can be interpreted as indicating that this edge forms a 'bridge'  between two sets of vertices.
 
@@ -158,7 +165,59 @@ In summary, we expect that graphs with low Cheeger values should suffer more fro
 
 #### Results
 
+### 3.5 Do average shortest path and graph diameter correlate with model performance?
+We observed no correlation between the relative performance of any of the models and the average shortest path nor the diameter. This affirms our suspicion that this statistic is not indicative of the presence of LRI in the dataset.
+
+Accuracy against ASP:
+| Model | Pearson | Spearman | Kendall |
+| --- | --- | --- | --- |
+| GCN | -0.014 | -0.003 | -0.002 |
+| EGNN | -0.006 | -0.009 | -0.006 |
+| ENN | -0.015 | -0.012 | -0.008 |
+| Transformer | -0.016 | -0.014 | -0.009 |
+
+Accuracy against diameter:
+| Model | Pearson | Spearman | Kendall |
+| --- | --- | --- | --- |
+| GCN | -0.017 | -0.009 | -0.006 |
+| EGNN | -0.006 | -0.010 | -0.007 |
+| ENN | -0.014 | -0.016 | -0.011 |
+| Transformer | -0.013 | -0.018 | -0.013 |
+
+However, by plotting the distribution of average shortest path
+against the Cheeger constant and measuring the correlation between the distribtuion and the performance of the models,
+we found a positive correlation between the distribution and the performance in the LRI sensitive models:
+
+| Model | Pearson | Spearman | Kendall |
+| --- | --- | --- | --- |
+| GCN | 0.373 | 0.383 | 0.218 |
+| EGNN | 0.514 | 0.628 | 0.41 |
+| ENN | 0.416 | 0.343 | 0.177 |
+| Transformer | - 0.102 | 0.037 | -0.006 |
+
+![img.png](assets/distribution_cheeger_asp.png)
+
+It is however important to note that our results are not significant.
+When we measured accuracy against average shortest path with control over the Cheeger constant, we found no correlation between the average shortest path and the accuracy of the models.
+
+We also measured the ratio between transformer accuracy against each model's accuracy along the distribution of graphs. We have noticed that when controlled for Cheeger constant, we notice that lower average shortest path translate to better performance of transformer against the other models.
+
+![img.png](assets/heatmap_trans_gcn_acc.png)
+
 ### 3.5 Qualitative investigation of graph characteristics 
+
+To affirm our hypothesis, we conducted a qualitative analysis. We sampled graphs from different bins of the average shortest path-Cheeger constant distribution to examine their bottle neck behaviour. We have indeed seen that the relationship between Cheeger constant and average shortest path accords with our theory.
+When we fix the Cheeger constant between $0.0667$ and $0.133$, and order the graph's average shortest path from top to bottom, we get the following:
+![img.png](assets/graph0.png)
+![img.png](assets/graph1.png)
+![img.png](assets/graph2.png)
+![img.png](assets/graph3.png)
+![img.png](assets/graph4.png)
+![img.png](assets/graph5.png)
+
+We began seeing graphs with sparse connections along average shortest path 6.93. 
+![img.png](assets/graph_distro_amount.png)
+Both the qualitative analysis and the accuracies analysis suggest that graphs with high LRI would have low Cheeger constant and average shortest path of length 6.93 and below. However, as can be seen, the majority of graphs in the dataset do not suffer from bottlenecking.
 
 
 ### 3.6 Does rewiring the graph to remove bottlenecks improve performance?
