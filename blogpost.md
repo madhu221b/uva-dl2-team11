@@ -73,9 +73,9 @@ Because we had limited computational resources, we chose to focus on the PascalV
 
 # 4. Experiments
 
-From the paper, we opt to train GCN and Transformer with Laplacian Positional Encodings (Transformer+LapPE) as representatives for 'local' and 'non-local' methods respectively on both the PascalVOC-SP and COCO-SP dataset. This both replicated the original models, and gave us access to a set of models that we could use to test hypotheses about the presence of LRI in the dataset.
+From the paper, we opt to train GCN and Transformer with Laplacian Positional Encodings (Transformer+LapPE) as representatives for 'local' and 'non-local' methods respectively on both the PascalVOC-SP and COCO-SP datasets. We were able to replicate the results using these models and we use them to test our hypothesis about the presence of LRI in the datasets.
 
-Additionally, we look at addressing the LRI problem through other approaches in Section 4. In this process, we also experiment with few other models. For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. We also deviate from the original paper in using a cosine learning rate scheduler rather than the default 'reduce on plateau' scheduler, because we faced compatibility issues when using the latter. This does not affect our results substantively, but accounts for minor differences between our results and the original paper.
+Additionally, we look at addressing the LRI problem through other approaches in this section. In this process, we also experiment with few other models. For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. We also deviate from the original paper in using a cosine learning rate scheduler rather than the default 'reduce on plateau' scheduler, because we face compatibility issues when using the latter. This does not affect our results substantively, but accounts for minor differences between our results and the original paper.
 
 ## 4.1 Alternative approaches to mitigate LRI problem:
 
@@ -83,16 +83,16 @@ Additionally, we look at addressing the LRI problem through other approaches in 
 
 Since, one of the main problem of LRI in MP-GNNs is over-squashing, a quick survey revealed that many of the existing literature try addressing this issue with help of topological change in the graphs using rewiring methods. More recently, [[2]](#2) proposed a curvature-based rewiring method for graphs based on Ricci curvature in Riemannian geometry. They introduce this as the Stochastic Discrete Ricci Flow (SDRF) algorithm which adds new edges in places where a strongly negative curve exists in order to smoothen out 'bottlenecks'.
 
-We implement the SDRF algorithm to rewire graphs in the PascalVOC-SP dataset. Since, the algorithm only takes into account the graph topology and remains agnostic to other features, there are no edge features for the new edges. Hence, in order to have a fair comparison, we first trained the GCN and Transformer+LapPE model on graphs with their edge features removed (i.e replacing with ones tensor) and obtained a baseline f1 performance. We then proceeded with adding a certain percentage of total edges in each graph of the test dataset using SDRF algorithm and benchmarked the trained model. To determine if rewiring with SDRF is beneficial, we compare the resulting f1 scores with baseline.
+We implement the SDRF algorithm to rewire graphs in the PascalVOC-SP dataset. Since, the algorithm only takes into account the graph topology and remains agnostic to other features, there are no edge features for the new edges. Hence, in order to have a fair comparison, we first trained the GCN and Transformer+LapPE model on graphs with their edge features removed (i.e replacing with ones tensor) and obtained a baseline F1 performance. We then proceeded with adding a certain percentage of total edges in each graph of the test dataset using SDRF algorithm and benchmarked the trained model. To determine if rewiring with SDRF is beneficial, we compare the resulting F1 scores with baseline.
 
 
 | ![](assets/sdrf_1.png) |![](assets/sdrf_2.png) |
 | -------- | -------- |
-| <a id="fig1"> Figure 1 </a>: Obtained f1 score on adding a certain ratio of original edges for GCN.  | <a id="fig2"> Figure 2 </a>: Obtained f1 score on adding a certain ratio of original edges for Transformer+LapPE.  |
+| <a id="fig1"> Figure 1 </a>: Obtained F1 score on adding a certain ratio of original edges for GCN.  | <a id="fig2"> Figure 2 </a>: Obtained F1 score on adding a certain ratio of original edges for Transformer+LapPE.  |
 
-**Note** - baseline f1 is the case when no edges are added i.e. ratio 0.0
+<sub><sup>**Note** - baseline f1 is the case when no edges are added i.e. ratio 0.0</sup></sub>
 
-The results however show that rewiring actually negatively affects the performance of GCN model. We attribute this outcome as the nature of the data which are 2D image superpixel graphs. Even though there might exist bottlenecks in this space, connecting and passing information between disparate patches of an image might truly confuse the trained model. The f1 scores of the Transformer+LapPE model remains the same throughout, which was expected as this model fully-connects the graph regardless.
+The results however show that rewiring actually negatively affects the performance of GCN model. We attribute this outcome as the nature of the data which are 2D image superpixel graphs. Even though there might exist bottlenecks in this space, connecting and passing information between disparate patches of an image might truly confuse the trained model. The F1 scores of the Transformer+LapPE model remains the same throughout, which was expected as this model fully-connects the graph regardlessly.
 
 ### 4.1.2 Geometric deep learning: 
 Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore architectures where instead of changing the semantic meaning of the graph by adding edges, we can make the features of the graph itself more expressive. One such domain where we can make the message passing approach of GNNs more expressive is Geometric Deep Learning (GEDL). 
@@ -114,11 +114,10 @@ Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore a
 | -------- |
 |  <a id="fig4"> Figure 4 </a>: SEGNN Architecture  |
 
-### Which models perform best?
+### 4.1.3 Which models perform best?
 
 As with the original study, we found that a transformer architecture performed better than all other models. However, we also tested a variety of MPNN models that explicitly encoded geometric information. We felt that these were a 'fairer' test of the capacity of a message passing network, because the geometric relationship between two nodes is more semantically meaningful than the one imposed by the arbitrary topology of the superpixel boundary graph. We found that these models gave comparable performance  to the transformer, even with as few as two message passing layers.
 
-A brief description of the models, and their performance, is given below:
 
 | <img width="555" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/8a49f585-8e3d-440d-8f37-b86b17286e12">  | <img width="475" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/e03ffad4-3177-4063-a441-d6c07c947a36"> | 
 | -------- | -------- |
@@ -128,10 +127,10 @@ Recall that our second goal above was to see whether improvements on the LRGB we
 
 TODO more discussion of the JK models? These are interesting because they are explicitly done to help oversmoothing.
 
-### Is performance correlated with increased importance of distant nodes?
+## 4.2 Influence Scores: Is performance correlated with increased importance of distant nodes?
 
 
-If the Pascal dataset was truly characterised by LRI, we should expect two things:
+If the PascalVOC-SP and COCO datasets was truly characterised by LRI, we should expect two things:
 - for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
 - for local architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
 
