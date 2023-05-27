@@ -148,7 +148,7 @@ $$ \tilde{I}(u, v) = \frac{I(u, v)}{\sum_i I(u, v_i)} $$
 The results of this analysis are shown below. The x-axis shows various path lengths, and the y-axis shows the normalised influence scores, averaged across all choices of target node for all graphs in the dataset.
 
 
-| <img width="515" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/1ee4e4d6-7b7c-4e00-936f-de3af831111c">|![image](https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/c838ec0b-7e37-458c-a539-cd782415942e) |
+| <img width="510" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/ed9f798b-de01-4f09-852b-4f3392577752">|<img width="517" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/1807507c-d007-4287-b017-548698b91521"> |
 | -------- | -------- |
 | <a id="fig5_1"> Figure 5.1 </a>: Influence Scores for PascalVOC-SP | <a id="fig5_2"> Figure 5.2 </a>: Influence Scores for COCO-SP  |
 
