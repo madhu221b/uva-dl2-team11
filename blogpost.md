@@ -278,11 +278,12 @@ The second is that we have seen no evidence to believe that over-squashing is an
 
 # 7. Individual Contributions
 
-1. Amity: 
-2. Nik Mather: He performed the experiments relating shortest path distance to influence score distribution, F1-score and accuracy (although he relied on Madhura and Avik for the implementation of influence score's computation). He assisted in writing the code for the Cheeger value experiments. Additionally, he structured and drafted the majority of the content of the blogpost. 
-3. Avik Pal:
-4. Aditya Patra:
-5. Madhura Pawar: She was responsible for reproducing the original experiments, building and maintaining the code infrastructure. She and Avik fixed quite some issues which we faced while trying to get the original code up and working. She implemented the E($n$)-Invariant model. Along with scripting and programming experiments which her colleagues needed, she was involved in creating illustrative architecture diagrams for the blogpost. Finally, she also helped proofread the blog and made necessary edits.
+1. Amity: She was responsible for the qualitative analysis of the graphs and the analysis of the average shortest path and Cheeger constant against the accuracy results. She also wrote the metrics required for the graphs analysis.
+ She also helped with the blogpost.
+1. Nik Mather: He performed the experiments relating shortest path distance to influence score distribution, F1-score and accuracy (although he relied on Madhura and Avik for the implementation of influence score's computation). He assisted in writing the code for the Cheeger value experiments. Additionally, he structured and drafted the majority of the content of the blogpost. 
+2. Avik Pal:
+3. Aditya Patra:
+4. Madhura Pawar: She was responsible for reproducing the original experiments, building and maintaining the code infrastructure. She and Avik fixed quite some issues which we faced while trying to get the original code up and working. She implemented the E($n$)-Invariant model. Along with scripting and programming experiments which her colleagues needed, she was involved in creating illustrative architecture diagrams for the blogpost. Finally, she also helped proofread the blog and made necessary edits.
 
 
 
