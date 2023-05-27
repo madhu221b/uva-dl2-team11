@@ -130,38 +130,38 @@ Recall that our second goal above was to see whether improvements on the LRGB we
 
 ## 4.2 Influence Scores: Is performance correlated with increased importance of distant nodes?
 
-
 If the PascalVOC-SP and COCO datasets was truly characterised by LRI, we should expect two things:
 - for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
 - for local architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
 
-To test these hypotheses, we used __influence functions__ [4] to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
+To test these hypotheses, we utilise the concept of  __influence score and distribution__ from [[4]](#4) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
 
 $$ \sum_i | \frac{\delta  y_u^{(i)}}{\delta h_v^{(0)} } | $$
 
-Where the individual gradients are obtained empirically through the Pytorch autograd system.
+Where the individual gradients are obtained empirically through torch.autograd - PyTorch’s automatic differentiation engine .
 
 To ensure that we could compare influence scores between models, we normalised the scores for each target node across all other nodes. That is, letting $I(u, v)$ be the influence of $v$ on node $u$, we computed the normalised influence score as:
 
 $$ \tilde{I}(u, v) = \frac{I(u, v)}{\sum_i I(u, v_i)} $$
 
-The results of this analysis are shown below. The x-axis shows various path lengths, and the y-axis shows the normalised influence scores, averaged across all choices of target node for all graphs in the dataset.
+The results of this analysis are shown in [Figure 5.1](#fig5_1) and [Figure 5.2](#fig5_2) . The x-axis shows various path lengths, and the y-axis shows the normalised influence scores, averaged across all choices of target node for all graphs in the dataset.
 
+@Avik discussing influence scores graphs
 
 | <img width="518" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/27597aaf-f0aa-448f-b4a4-4384c636caca">|<img width="517" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/1807507c-d007-4287-b017-548698b91521"> |
 | -------- | -------- |
 | <a id="fig5_1"> Figure 5.1 </a>: Influence Scores for PascalVOC-SP | <a id="fig5_2"> Figure 5.2 </a>: Influence Scores for COCO-SP  |
 
-Overall, we found that transformers do see a greater influence from distant nodes than local architectures.
+
 
 ##  4.3 Noising Experiment:  Are distant nodes important for achieving good accuracy?
 
-While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. Note that in section 3.1, the transformer had a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer was simply over-fitting to distant nodes, and they are unimportant when generalising to the test set.
+While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. From [Table 1](#tab1) we saw that the transformer has a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer is over-fitting to distant nodes, and they are unimportant when generalising to the test set.
 
-To test this hypothesis explicitly, we tested how the accuracy of our models changed when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $x\_d$ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node. Also, denote $x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
+To test this hypothesis explicitly, we test how the accuracy of our models change when we replacedthe input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $x\_d$ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node. Also, denote $x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
 
 $$ f_{d}(x) =  E_{X_1, ..., X_D}[f(x) | X_{\bar{d}}] $$
-$$= E_{X_d |X_{\bar{d}}}  ..., X_D}[f(x)] $$
+$$ f_{d}(x) =  E_{X_d |X_{\bar{d}}}  ..., X_D}[f(x)] $$
 $$ \approx E_{X_d}[f(x)] \approx f(x_{\bar{d}}, E[{X_d}]) $$
 
 Where the last two steps assume the input features are independent, and that the model is locally linear. The argument was inspired by [15].
@@ -179,16 +179,14 @@ There are a number of interesting observations from this graph:
 * For both the GCN and the transformer, there is a mismatch between the maximum distance at which we obtain significant influence scores, and the maximum distance that affects accuracy. This indicates that at least some of the observed influence of distant nodes is 'spurious' in that it affects the model's predictions without increasing accuracy.
 
 
+# 5. Qualitative Experiments
+## 5.1 Does model performance correlate with graph qualities that predict over-squashing?
 
-### Does model performance correlate with graph qualities that predict over-squashing?
+Recall that the original LRGB paper claimed that their datasets were good benchmarks for LRI based on three statistics of the graphs they contained: the average shortest path distance between nodes in the graph, the graph diameter, and the number of nodes. We hypothesize that if these statistics were indicative of the presence of long range interactions in the dataset, then we would be able to correlate them with the relative performance of different models. For example, because transformers are less susceptible to over-squashing than GCNs, we expected that they should outperform GCNs on tasks with high values of each statistic.
 
-Recall that the original LRGB paper claimed that their datasets were good benchmarks for LRI based on three statistics of the graphs they contained: the average shortest path distance between nodes in the graph, the graph diameter, and the number of nodes. 
+While it's not clear that the statistics we mentioned are related to over-squashing, we also investigate an alternative statistic that has a stronger theoretical relationship with over-squashing - __The Cheeger constant__.
 
-We hypothesised that if these statistics were indicative of the presence of long range interactions in the dataset, then we would be able to correlate them with the relative performance of different models. For example, because transformers are less susceptible to over-squashing than GCNs, we expected that they should outperform GCNs on tasks with high values of each statistic.
-
-While it's not clear that the statistics we mentioned are related to over-squashing, we also investigated an alternative statistic that has a stronger theoretical relationship with over-squashing.
-
-Recently [2] has shown that the degree of over-squashing can be measured by spectral properties of a graph. The Cheeger constant $h_G$ of a graph G is defined as:
+Recently [[2]](#2) has shown that the degree of over-squashing can be measured by spectral properties of a graph. The Cheeger constant $h_G$ of a graph G is defined as:
 
 $$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{|\delta S |}{\min vol(S), vol(V/S)}$$
 
@@ -200,9 +198,9 @@ In turn, this curvature controls how effectively gradients can populate through 
 
 In summary, we expect that graphs with low Cheeger values should suffer more from over-squashing.
 
-#### Results
 
-### 3.5 Qualitative investigation of graph characteristics 
+## 5.2 Qualitative investigation of graph characteristics 
+@Amity
 
 
 
@@ -210,17 +208,17 @@ In summary, we expect that graphs with low Cheeger values should suffer more fro
 Plan:
 * can prove that oversquashing is a problem based on the application of a problem that is designed to fix oversquashing.
 
-## 4. Conclusions
+### 6. Conclusion
 
 The goals of this study were to replicate the results of the original study, to provide a better characterisation of which of the three LRI factors were most important and finally to assess whether the LRGB was indeed a good benchmark for LRI. The first of these was met unequivocally, whereas the other two deserve more qualified discussion.
 
-### 4.1 Which LRI factors are most prevalent?
+### 6.1 Which LRI factors are most prevalent?
 The only LRI factor we found unequivocal evidence for was 'under-reaching'.We showed that the predictions of transformer models were heavily influenced by distant nodes. Moreover, we showed that distant nodes (up to 8 nodes away) had a meaningful influence on the accuracy of those predictions. This shows that our method can be used to place a lower bound on the length of interaction on a candidate LRI dataset, although this is only possible on node-level tasks.
 
 We found little evidence for over-squashing in the Pascal dataset. If this had been present, we expected that we would find a relationship between the Cheeger constant and the relative accuracies of the transformer and GCN. Moreover, our qualitative exploration of the dataset made us doubt that over-squashing could be meaningfully captured by any simple topological statistics.
 
 
-### 4.2 Is the LRGB a good benchmark?
+### 6.2 Is the LRGB a good benchmark?
 
 We can give a qualified yes: it's true that there is useful information in distant nodes, and a model can improve its performance on this dataset by leveraging that information.
 
@@ -229,9 +227,14 @@ However, there are two important caveats: the first is that a model can drastica
 The second is that we have seen no evidence to believe that over-squashing is an issue in these datasets. Overall, we believe there needs to be a more compelling argument made linking properties of these datasets to the theoretical causes of oversquashing before this is considered a 'benchmark' for oversquashing.
 
 
-# 5. Individual Contributions
+# 7. Individual Contributions
 
-*__Nik__ performed the experiments relating shortest path distance to influence, F1-score and accuracy (although he relied on Madhura and Avik to implement the jacobian for the influence score), assisted in writing the code for the Cheeger value experiments, and wrote most of the blogpost.
+1. Amity: 
+2. Nik Mather: He performed the experiments relating shortest path distance to influence score distribution, F1-score and accuracy (although he relied on Madhura and Avik for the implementation of influence score's computation). He assisted in writing the code for the Cheeger value experiments. Additionally, he structured and drafted the majority of the content of the blogpost. 
+3. Avik Pal:
+4. Aditya Patra:
+5. Madhura Pawar: She was responsible for reproducing the original experiments, building and maintaining the code infrastructure. She and Avik fixed quite some issues which we faced while trying to get the original code up and working. She implemented the E($n$)-Invariant model. Along with scripting and programming experiments which her colleagues needed, she was involved in creating illustrative architecture diagrams for the blogpost. Finally, she also helped proofread the blog and made necessary edits.
+
 
 
 # 6. References
