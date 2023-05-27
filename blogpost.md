@@ -221,22 +221,21 @@ We observed no correlation between the relative performance of any of the models
 However, by plotting the distribution of average shortest path
 against the Cheeger constant and measuring the correlation between the distribtuion and the performance of the models,
 we found a positive correlation between the distribution and the performance in the LRI sensitive models:
+| <img width="700" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9ccbe1d5-c899-47b4-9b50-9c733c56f43e"> | ![img.png](assets/distribution_cheeger_asp.png) | 
+| -------- | -------- | 
+|  <a id="tab6"> Table 6 </a>: Correlation between accuracy and the graph distribution | <a id="fig7"> Figure 7 </a>: Cheeger Value vs Average Shortest Path Distribution for GCN |
 
-| Model | Pearson | Spearman | Kendall |
-| --- | --- | --- | --- |
-| GCN | 0.373 | 0.383 | 0.218 |
-|  E(n)-Equivariant | 0.514 | 0.628 | 0.41 |
-|  E(n)-Invariant | 0.416 | 0.343 | 0.177 |
-| Transformer+LapPE | - 0.102 | 0.037 | -0.006 |
-
-![img.png](assets/distribution_cheeger_asp.png)
 
 It is however important to note that our results are not significant.
 When we measured accuracy against average shortest path with control over the Cheeger constant, we found no correlation between the average shortest path and the accuracy of the models.
 
-We also measured the ratio between transformer accuracy against each model's accuracy along the distribution of graphs. We have noticed that when controlled for Cheeger constant, we notice that lower average shortest path translate to better performance of transformer against the other models.
+We also measured the ratio between transformer accuracy against each model's accuracy along the distribution of graphs. We have noticed that when controlled for Cheeger constant, we notice that lower average shortest path translate to better performance of transformer against the other models as seen in [Figure 8](#fig8).
 
-![img.png](assets/heatmap_trans_gcn_acc.png)
+| ![img.png](assets/heatmap_trans_gcn_acc.png) |![img.png](assets/graph_distro_amount.png) | 
+| -------- | -------- | 
+|  <a id="fig8"> Figure 8 </a>: Graph Transformer's heatmap for Cheeger Value vs Average Shortest Path | <a id="fig9"> Figure 9 </a>: Graph Count heatmap for Cheeger Value vs Average Shortest Path|
+
+
 
 
 ## 5.3 Qualitative investigation of graph characteristics 
@@ -248,8 +247,8 @@ When we fix the Cheeger constant between $0.0667$ and $0.133$, and order the gra
 
 
 
-We began seeing graphs with sparse connections along average shortest path 6.93. 
-![img.png](assets/graph_distro_amount.png)
+We began seeing graphs with sparse connections along average shortest path 6.93.  as seen in [Figure 9](#fig9)
+
 Both the qualitative analysis and the accuracies analysis suggest that graphs with high LRI would have low Cheeger constant and average shortest path of length 6.93 and below. However, as can be seen, the majority of graphs in the dataset do not suffer from bottlenecking.
 
 
