@@ -21,7 +21,7 @@ The Long Range Graph Benchmark [[1]](#1) are a number of datasets that attempt t
 
 -  __PascalVOC-SP__ and __COCO-SP__:: These are node classification datasets derived from [[8]](#8) and [[9]](#9) respectively. Each node corresponds to a region of the image belonging to a particular class. Each image is segmented into superpixels, and the task is to predict the class of the pixel. A graph is formed where the nodes correspond to each superpixel, the 14-dim node features are 12-dim RGB values and 2-dim coordinates of the center of mass of pixel locations. The edges correspond to which superpixels are contiguous in the image. 
 - __PCQM-Contact__: This dataset is derived from a molecular dataset [[10]](#10), where each node is an atom, and the edges correspond to the molecular structure. The task is to predict pairs of distant nodes.  
-4. __Peptides-func__ and __Peptides-struct__: These datasets are derived from the dataset of peptides [[11]](#11). The authors define two tasks,  graph-level regression and graph-level classification, to predict molecular properties of the graph.
+- __Peptides-func__ and __Peptides-struct__: These datasets are derived from the dataset of peptides [[11]](#11). The authors define two tasks,  graph-level regression and graph-level classification, to predict molecular properties of the graph.
 
 
 ## 2.2 Are these truly ‘long range’ benchmarks?
@@ -29,10 +29,6 @@ The Long Range Graph Benchmark [[1]](#1) are a number of datasets that attempt t
 The central claim of the paper is that the above datasets provide a benchmark for assessing whether a new method solves the LRI problem. While the paper doesn't explicitly describe what makes for a good benchmark, we believe the datasets should satisfy these criteria:
 1. At least one of the three factors that we described as characterising LRI- under-reaching, over-smoothing and over-squashing, should be present in the dataset.
 2. The majority of improvements in model performance on the benchmark should come from solving one of the above problems.
-
-
-In this section, we describe the arguments that the authors make in support of their claim, and discuss their strengths and weaknesses.
- 
 
 ### 2.2.1 LRI by Construction
 
@@ -46,15 +42,11 @@ In summary, there isn't a strong _a priori_ reason to believe that any of the da
 
 ### 2.2.2 Relative outperformance of transformer methods
 
-'Graph Transformer' architectures are a type of graph neural network which ignore the original input graph in favour of a fully connected one  [[14]](#14). Doing so allows them to sidestep each of the issues that characterise LRI problems. Since pairwise interactions are modeled between all nodes, there is no danger of under-reaching. Additionally, this also means we aren't compelled to include as many message passing layers, preventing over-smoothing. Finally, since there is a direct path between any pair of nodes in a fully connected graph, no other node can serve as a bottleneck, preventing over-smoothing. We will sometimes refer to GNNs that aren't transformers as 'local' methods.
-
-The authors showed that transformer architectures outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there are other plausible explanations. For example, it’s possible that the extra expressivity afforded by the transformers attention mechanism was responsible for the improved performance.
-
-Arguably, we should look for more direct evidence that improved performance was due to an ability to leverage long range information.
+'Graph Transformer' architectures are a type of graph neural network which ignore the original input graph in favour of a fully connected one  [[14]](#14). Doing so allows them to sidestep each of the issues that characterise LRI problems. Since pairwise interactions are modeled between all nodes, there is no danger of under-reaching. Additionally, this also means we aren't compelled to include as many message passing layers, preventing over-smoothing. Finally, since there is a direct path between any pair of nodes in a fully connected graph, no other node can serve as a bottleneck, preventing over-smoothing. The authors showed that transformer architectures outperformed other methods in 4 out of the 5 datasets. While they interpreted this as evidence of LRI in the data, there could be other plausible explanations. Arguably, we should look for more direct evidence that improved performance was due to an ability to leverage long range information.
 
 
 ### 2.2.3 Graph statistics
-The authors generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claim that high values of these statistics indicate LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem. A graph may have a large number of nodes, and a complex topology, but it doesn't follow that a task defined on that graph can only be solved by modeling global interactions. For example, consider the case where our task is to calculate the sum of the hidden features in nodes - this isn't dependent on graph topology. Therefore, we think these graph statistics need to be more directly linked with model performance before we can conclude that they are proof of LRI in the datasets.
+The authors generated statistics characterising the graphs found in each dataset, such as the graph diameter, the average shortest path, and the number of nodes. They claim that high values of these statistics indicate LRI within the graph. However, it’s not clear whether these statistics actually capture features of the graph topology relevant to the LRI problem. A graph may have a large number of nodes, and a complex topology, but it doesn't follow that a task defined on that graph can only be solved by modeling global interactions. Therefore, we think these graph statistics need to be more directly linked with model performance before we can conclude that they are proof of LRI in the datasets.
 
 
 # 3. Our Contributions
@@ -66,7 +58,7 @@ Our project attempts to address the weaknesses we identified in each of the abov
 3. To give our reader greater confidence that these datasets are a suitable benchmark for LRI methods, in the sense that improvements on these benchmarks can be attributed to an increased ability to solve the LRI problem.
 4. To provide a better characterisation of which of the three LRI factors were most important.
 
-Because we had limited computational resources, we chose to focus on the PascalVOC-SP and COCO-SP datasets. Because this is a node classification dataset, it allows us to investigate long range interactions in ways that are impossible for graph level tasks. Also, we employ the models from geometric deep learning domain to see how they perform on these datasets. The issue however we faced is that the molecular datasets - PCQM-Contact, Peptides-func and Peptides-struct have no positional information hence we stick with the above two datasets as they have positional information associated with each node. 
+Because we had limited computational resources, we chose to focus on the PascalVOC-SP and COCO-SP datasets. We employ the models from geometric deep learning domain to see how they perform on these datasets. The issue however we faced is that the molecular datasets - PCQM-Contact, Peptides-func and Peptides-struct have no positional information hence we stick with the above two datasets as they have positional information associated with each node. 
 
 # 4. Experiments
 
