@@ -143,14 +143,11 @@ $$ \tilde{I}(u, v) = \frac{I(u, v)}{\sum_i I(u, v_i)} $$
 
 The results of this analysis are shown in [Figure 5.1](#fig5_1) and [Figure 5.2](#fig5_2) . The x-axis shows various path lengths, and the y-axis shows the normalised influence scores, averaged across all choices of target node for all graphs in the dataset.
 
-@Avik discussing influence scores graphs
-We can see that the influence scores for transformers are high for longer distances. This is mainly because they work on a fully connected graph. Additionally we see that SEGNNs also have a nonzero influence score for a longer distance which we attribute to the presence of residual connections in the network architecture.
-
 | <img width="518" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/27597aaf-f0aa-448f-b4a4-4384c636caca">|<img width="517" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/1807507c-d007-4287-b017-548698b91521"> |
 | -------- | -------- |
 | <a id="fig5_1"> Figure 5.1 </a>: Influence Scores for PascalVOC-SP | <a id="fig5_2"> Figure 5.2 </a>: Influence Scores for COCO-SP  |
 
-
+We can see that the influence scores for transformers are high for longer distances. This is mainly because they work on a fully connected graph. Additionally we see that SEGNNs also have a nonzero influence score for a longer distance which we attribute to the presence of residual connections in the network architecture.
 
 ##  4.3 Noising Experiment:  Are distant nodes important for achieving good accuracy?
 
