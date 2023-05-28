@@ -131,9 +131,9 @@ If the PascalVOC-SP and COCO datasets was truly characterised by LRI, we should 
 - for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
 - for local architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
 
-To test these hypotheses, we utilise the concept of  __influence score and distribution__ from [[4]](#4) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i$th logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
+To test these hypotheses, we utilise the concept of  __influence score and distribution__ from [[4]](#4) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i^{th}$ logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
 
-$$ \sum_i | \frac{\delta  y_u^{(i)}}{\delta h_v^{(0)} } | $$
+$$ I(u, v) = \sum_i | \frac{\delta  y_u^{(i)}}{\delta h_v^{(0)} } | $$
 
 Where the individual gradients are obtained empirically through torch.autograd - PyTorch’s automatic differentiation engine .
 
@@ -218,8 +218,6 @@ When we fix the Cheeger constant between $0.0667$ and $0.133$, and order the gra
 | -------- | -------- | -------- |
 |  ![img.png](assets/graph3.png) | ![img.png](assets/graph4.png) | ![img.png](assets/graph5.png) |
 
-
-
 We begin seeing graphs with sparse connections along average shortest path 6.93 as seen in [Figure 9](#fig9). Both the qualitative analysis and the accuracies analysis suggest that graphs with high LRI would have low Cheeger constant and average shortest path of length 6.93 and below. However, as can be seen, the majority of graphs in the dataset do not suffer from bottlenecking.
 
 # 6. Conclusion
@@ -227,18 +225,15 @@ We begin seeing graphs with sparse connections along average shortest path 6.93 
 The goals of this study were to replicate the results of the original study, provide alternative approaches to mitigate the problem of LRI and to provide a better characterisation of which of the three LRI factors were most important and finally to assess whether the LRGB was indeed a good benchmark for LRI. The first two of these were met unequivocally, whereas the other two deserve more qualified discussion.
 
 ## 6.1 Which LRI factors are most prevalent?
-The only LRI factor we found unequivocal evidence for was 'under-reaching'.We showed that the predictions of transformer models were heavily influenced by distant nodes. Moreover, we showed that distant nodes (up to 8 nodes away) had a meaningful influence on the accuracy of those predictions. This shows that our method can be used to place a lower bound on the length of interaction on a candidate LRI dataset, although this is only possible on node-level tasks.
-
-We found little evidence for over-squashing in the Pascal dataset. If this had been present, we expected that we would find a relationship between the Cheeger constant and the relative accuracies of the transformer and GCN. Moreover, our qualitative exploration of the dataset made us doubt that over-squashing could be meaningfully captured by any simple topological statistics.
+The only LRI factor we found unequivocal evidence for was 'under-reaching'. We showed that the predictions of transformer models were heavily influenced by distant nodes. Moreover, we showed that distant nodes (up to 8 hops away) had a meaningful influence on the accuracy of those predictions. This shows that our method can be used to place a lower bound on the length of interaction on a candidate LRI dataset, although this is only possible on node-level tasks. We find little evidence for over-squashing in the datasets. If this had been present, we expected that we would find a relationship between the Cheeger constant and the relative accuracies of the transformer and GCN. Moreover, our qualitative exploration of the dataset made us doubt that over-squashing could be meaningfully captured by any simple topological statistics.
 
 
 ## 6.2 Is the LRGB a good benchmark?
 
-We can give a qualified yes: it's true that there is useful information in distant nodes, and a model can improve its performance on this dataset by leveraging that information.
+We can give a qualified yes: it's true that there is useful information in distant nodes, and a model can improve its performance on this dataset by leveraging that information. However, there are two important caveats: the first is that a model can drastically improve its performance even while only focussing on local information. Secondly, we see no evidence to believe that over-squashing is an issue in these datasets. Overall, we believe there needs to be a more compelling argument made linking properties of these datasets to the theoretical causes of oversquashing before this is considered a 'benchmark' for oversquashing.
 
-However, there are two important caveats: the first is that a model can drastically improve its performance even while only focussing on local information. Therefore, we recommend applying the method from section 3.3 to quantify the impact of nodes at different distances before linking increased accuracy to improved modelling of LRI.
-
-The second is that we have seen no evidence to believe that over-squashing is an issue in these datasets. Overall, we believe there needs to be a more compelling argument made linking properties of these datasets to the theoretical causes of oversquashing before this is considered a 'benchmark' for oversquashing.
+## 6.3 GEDL Models
+Current results show that GEDL models outperform GCN, hinting us that their expressivity due to geometrical information helps mitigate LRI problem. We see promise in further exploring how GEDL models can be used to solve LRI problem in various other graph domains where we have directional information, such as long sequences of molecules. 
 
 
 # 7. Individual Contributions
@@ -247,7 +242,7 @@ The second is that we have seen no evidence to believe that over-squashing is an
  She also helped with the blogpost.
 1. **Nik Mather**: He performed the experiments relating shortest path distance to influence score distribution, F1-score and accuracy (although he relied on Madhura and Avik for the implementation of influence score's computation). He assisted in writing the code for the Cheeger value experiments. Additionally, he structured and drafted the majority of the content of the blogpost. 
 2. **Avik Pal**: He and Madhura reproduced the original paper's experiments. He additionally carried out experiments related to rewiring, implemented the E($n$)-Equivariant model and worked on influence score computation. He also helped with his part in the blogpost.
-3. **Aditya Prakash Patra**: Aditya wrote the code for SEGNN model along with performing all the experiments and ablations associated with it. He also contributed in writing his assigned section in the blogpost. 
+3. **Aditya Prakash Patra**: He wrote the code for SEGNN model along with performing all the experiments and ablations associated with it. He also contributed in writing his assigned section in the blogpost. 
 4. **Madhura Pawar**: She was responsible for reproducing the original experiments, building and maintaining the code infrastructure. She and Avik fixed quite some issues which we faced while trying to get the original code up and working. She implemented the E($n$)-Invariant model. Along with scripting and programming experiments which her colleagues needed, she was involved in creating illustrative architecture diagrams for the blogpost. Finally, she also helped proofread the blog and made necessary edits.
 
 
