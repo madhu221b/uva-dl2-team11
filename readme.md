@@ -41,6 +41,11 @@ python src/main_egnn.py --cfg src/configs/ENN/vocsuperpixels-ENN.yaml device cud
 python src/main_egnn.py --cfg src/configs/EGNN/vocsuperpixels-EGNN.yaml device cuda:0 wandb.use False
 ```
 
+#### For E(3)-Steerable (SEGNN)
+```bash
+python src/main_steer.py --cfg src/configs/SCGNN/vocsuperpixels-SCGNN.yaml device cuda:0 wandb.use False
+```
+
 ### W&B logging
 To use W&B logging, set `wandb.use True` and have a `gtransformers` entity set-up in your W&B account (or change it to whatever else you like by setting `wandb.entity`).
 
