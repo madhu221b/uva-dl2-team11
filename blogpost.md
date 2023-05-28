@@ -286,7 +286,7 @@ The second is that we have seen no evidence to believe that over-squashing is an
  She also helped with the blogpost.
 1. Nik Mather: He performed the experiments relating shortest path distance to influence score distribution, F1-score and accuracy (although he relied on Madhura and Avik for the implementation of influence score's computation). He assisted in writing the code for the Cheeger value experiments. Additionally, he structured and drafted the majority of the content of the blogpost. 
 2. Avik Pal:
-3. Aditya Patra:
+3. Aditya Prakash Patra: Aditya wrote the code for SEGNN model along with performing all the experiments and ablations associated with it. He also contributed in writing his assigned section in the blogpost. 
 4. Madhura Pawar: She was responsible for reproducing the original experiments, building and maintaining the code infrastructure. She and Avik fixed quite some issues which we faced while trying to get the original code up and working. She implemented the E($n$)-Invariant model. Along with scripting and programming experiments which her colleagues needed, she was involved in creating illustrative architecture diagrams for the blogpost. Finally, she also helped proofread the blog and made necessary edits.
 
 
