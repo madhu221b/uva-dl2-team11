@@ -71,7 +71,7 @@ There are two pre-prepared pickle files available for use. They are found [here]
 
 ## Influence Score experiments
 
-To obtain run the influence score experiments:
+To run the influence score experiments:
 * navigate to the directory containing model_inference.py.
 * Set up the config files, as was required for model training.
 * Run the following terminal command to generate the raw gradient information:
