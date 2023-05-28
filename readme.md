@@ -33,12 +33,12 @@ python src/main.py --cfg src/configs/GCN/vocsuperpixels-GCN.yaml device cuda:0 w
 python src/main.py --cfg src/configs/GT/vocsuperpixels-Transformer+LapPE.yaml device cuda:0 wandb.use False
 ```
 
-#### For E(n)-Invariant (EGNN) and E(n)-Equivariant (EGNN2)
+#### For E(n)-Invariant (ENN) and E(n)-Equivariant (EGNN)
 
 ```bash
-python src/main_egnn.py --cfg src/configs/EGNN/vocsuperpixels-EGNN.yaml device cuda:0 wandb.use False
+python src/main_egnn.py --cfg src/configs/ENN/vocsuperpixels-EGN.yaml device cuda:0 wandb.use False
 
-python src/main_egnn.py --cfg src/configs/EGNN/vocsuperpixels-EGNN2.yaml device cuda:0 wandb.use False
+python src/main_egnn.py --cfg src/configs/EGNN/vocsuperpixels-EGNN.yaml device cuda:0 wandb.use False
 ```
 
 ### W&B logging
