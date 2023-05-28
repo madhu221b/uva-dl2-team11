@@ -36,7 +36,7 @@ python src/main.py --cfg src/configs/GT/vocsuperpixels-Transformer+LapPE.yaml de
 #### For E(n)-Invariant (ENN) and E(n)-Equivariant (EGNN)
 
 ```bash
-python src/main_egnn.py --cfg src/configs/ENN/vocsuperpixels-EGN.yaml device cuda:0 wandb.use False
+python src/main_egnn.py --cfg src/configs/ENN/vocsuperpixels-ENN.yaml device cuda:0 wandb.use False
 
 python src/main_egnn.py --cfg src/configs/EGNN/vocsuperpixels-EGNN.yaml device cuda:0 wandb.use False
 ```
