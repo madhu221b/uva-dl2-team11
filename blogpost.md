@@ -222,17 +222,17 @@ When we fix the Cheeger constant between $0.0667$ and $0.133$, and order the gra
 
 We begin seeing graphs with sparse connections along average shortest path 6.93 as seen in [Figure 9](#fig9). Both the qualitative analysis and the accuracies analysis suggest that graphs with high LRI would have low Cheeger constant and average shortest path of length 6.93 and below. However, as can be seen, the majority of graphs in the dataset do not suffer from bottlenecking.
 
-### 6. Conclusion
+# 6. Conclusion
 
 The goals of this study were to replicate the results of the original study, provide alternative approaches to mitigate the problem of LRI and to provide a better characterisation of which of the three LRI factors were most important and finally to assess whether the LRGB was indeed a good benchmark for LRI. The first two of these were met unequivocally, whereas the other two deserve more qualified discussion.
 
-### 6.1 Which LRI factors are most prevalent?
+## 6.1 Which LRI factors are most prevalent?
 The only LRI factor we found unequivocal evidence for was 'under-reaching'.We showed that the predictions of transformer models were heavily influenced by distant nodes. Moreover, we showed that distant nodes (up to 8 nodes away) had a meaningful influence on the accuracy of those predictions. This shows that our method can be used to place a lower bound on the length of interaction on a candidate LRI dataset, although this is only possible on node-level tasks.
 
 We found little evidence for over-squashing in the Pascal dataset. If this had been present, we expected that we would find a relationship between the Cheeger constant and the relative accuracies of the transformer and GCN. Moreover, our qualitative exploration of the dataset made us doubt that over-squashing could be meaningfully captured by any simple topological statistics.
 
 
-### 6.2 Is the LRGB a good benchmark?
+## 6.2 Is the LRGB a good benchmark?
 
 We can give a qualified yes: it's true that there is useful information in distant nodes, and a model can improve its performance on this dataset by leveraging that information.
 
@@ -243,16 +243,16 @@ The second is that we have seen no evidence to believe that over-squashing is an
 
 # 7. Individual Contributions
 
-1. Amity: She was responsible for the qualitative analysis of the graphs and the analysis of the average shortest path and Cheeger constant against the accuracy results. She also wrote the metrics required for the graphs analysis.
+1. **Amity**: She was responsible for the qualitative analysis of the graphs and the analysis of the average shortest path and Cheeger constant against the accuracy results. She also wrote the metrics required for the graphs analysis.
  She also helped with the blogpost.
-1. Nik Mather: He performed the experiments relating shortest path distance to influence score distribution, F1-score and accuracy (although he relied on Madhura and Avik for the implementation of influence score's computation). He assisted in writing the code for the Cheeger value experiments. Additionally, he structured and drafted the majority of the content of the blogpost. 
-2. Avik Pal:
-3. Aditya Prakash Patra: Aditya wrote the code for SEGNN model along with performing all the experiments and ablations associated with it. He also contributed in writing his assigned section in the blogpost. 
-4. Madhura Pawar: She was responsible for reproducing the original experiments, building and maintaining the code infrastructure. She and Avik fixed quite some issues which we faced while trying to get the original code up and working. She implemented the E($n$)-Invariant model. Along with scripting and programming experiments which her colleagues needed, she was involved in creating illustrative architecture diagrams for the blogpost. Finally, she also helped proofread the blog and made necessary edits.
+1. **Nik Mather**: He performed the experiments relating shortest path distance to influence score distribution, F1-score and accuracy (although he relied on Madhura and Avik for the implementation of influence score's computation). He assisted in writing the code for the Cheeger value experiments. Additionally, he structured and drafted the majority of the content of the blogpost. 
+2. **Avik Pal**: He and Madhura reproduced the original paper's experiments. He additionally carried out experiments related to rewiring, implemented the E($n$)-Equivariant model and worked on influence score computation. He also helped with his part in the blogpost.
+3. **Aditya Prakash Patra**: Aditya wrote the code for SEGNN model along with performing all the experiments and ablations associated with it. He also contributed in writing his assigned section in the blogpost. 
+4. **Madhura Pawar**: She was responsible for reproducing the original experiments, building and maintaining the code infrastructure. She and Avik fixed quite some issues which we faced while trying to get the original code up and working. She implemented the E($n$)-Invariant model. Along with scripting and programming experiments which her colleagues needed, she was involved in creating illustrative architecture diagrams for the blogpost. Finally, she also helped proofread the blog and made necessary edits.
 
 
 
-# 6. References
+# References
 <a id="1">[1]</a> 
 Dwivedi, Vijay Prakash et al. “Long Range Graph Benchmark.” ArXiv abs/2206.08164 (2022): n. pag.
 
