@@ -40,7 +40,7 @@ optim:
   weight_decay: 0.0
   base_lr: 0.0005
   max_epoch: 1000
-  scheduler: reduce_on_plateau
+  scheduler: cos
   reduce_factor: 0.5
   schedule_patience: 10
   min_lr: 1e-5

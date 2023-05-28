@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 
-file = open('egnn.pkl', 'rb')
+file = open('inf_scores_egnn.pkl', 'rb')
 entries = pickle.load(file)
 file.close()
 

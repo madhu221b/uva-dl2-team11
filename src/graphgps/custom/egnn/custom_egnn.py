@@ -118,7 +118,7 @@ class E_GCL_mask2(E_GCL):
         self.act_fn = act_fn
 
     def coord_model(self, coord, edge_index, coord_diff, edge_feat, x_weights):
-        row, col = edge_index
+        row, col = edge_index.to(torch.int64)
         trans = coord_diff * self.coord_mlp(edge_feat) 
         agg = unsorted_segment_sum(trans, row, num_segments=coord.size(0))
         coord_update = torch.div(agg, x_weights)
@@ -157,21 +157,35 @@ class EGNN2(torch.nn.Module):
         self.graph_dec = nn.Sequential(nn.Linear(self.hidden_nf, self.hidden_nf),
                                        act_fn,
                                        nn.Linear(self.hidden_nf, 21))
+
+# #         For concatenation
+#         self.graph_dec = nn.Sequential(nn.Linear(self.hidden_nf*n_layers, self.hidden_nf),
+#                                        act_fn,
+#                                        nn.Linear(self.hidden_nf, 21))
         self.to(self.device)
 
   
       
     def forward(self, h0, x, edges, edge_attr, x_weights):
         h = self.embedding(h0)
+        layer_outputs = []
         for i in range(0, self.n_layers):
             x = x - x.min(0, keepdim=True)[0]
             x = x / x.max(0, keepdim=True)[0]
             if self.node_attr: 
                 h, x, _ = self._modules["gcl_%d" % i](h, edges, x, edge_attr=edge_attr, node_attr=h0, x_weights=x_weights)
+                layer_outputs.append(h)
             else:
                 h, x, _ = self._modules["gcl_%d" % i](h, edges, x, edge_attr=edge_attr, node_attr=None, x_weights=x_weights)
 
         h = self.node_dec(h)
+
+#         # for addition
+#         if self.node_attr:  
+#             h = torch.cat(layer_outputs, dim=1)
+        
+#         h1 = torch.stack(layer_outputs, dim=0)
+#         h = torch.max(h1, dim=0)[0]
 
         pred = self.graph_dec(h)
         return pred
