@@ -48,7 +48,7 @@ To use W&B logging, set `wandb.use True` and have a `gtransformers` entity set-u
 After training, the model checkpoints could be loaded up directly by providing the checkpoint path in the configuration at `cfg.train.finetune` and set `cfg.train.freeze_pretrained` to True. To compute influence scores, run src/model_inference.py and provide the relevant configuration file,
 
 ```bash
-python src/model_inference.py --cfg src/configs/EGNN/vocsuperpixels-EGNN2.yaml device cuda:0 wandb.use False
+python src/model_inference.py --cfg src/configs/EGNN/vocsuperpixels-EGNN.yaml device cuda:0 wandb.use False train.finetune /path/to/ckpt_dir train.freeze_pretrained True
 ```
 ## Accuracy and F1 experiments
 
