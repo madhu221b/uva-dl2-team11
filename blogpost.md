@@ -166,53 +166,36 @@ While the above analysis shows that the predictions of our transformer are affec
 To test this hypothesis explicitly, we test how the accuracy of our models change when we replacedthe input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $x\_d$ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node. Also, denote $x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
 
 $$ f_{d}(x) =  E_{X_1, ..., X_D}[f(x) | X_{\bar{d}}] $$
-$$ f_{d}(x) =  E_{X_d |X_{\bar{d}}}  ..., X_D}[f(x)] $$
-$$ \approx E_{X_d}[f(x)] \approx f(x_{\bar{d}}, E[{X_d}]) $$
+ 
+ The argument was inspired by [[15]](#15). Therefore, if there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes.  The results are reported in [Figure 6.1](#fig6_1), where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
 
-Where the last two steps assume the input features are independent, and that the model is locally linear. The argument was inspired by [15].
-Therefore, if there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes. 
-
-The results are reported below, where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
+__Result Discussion__: The transformer leverages distant nodes more effectively than the GCN, even at distances that the GCN can 'reach'. This may indicate that the GCN is suffering from over-squashing, although it is not conclusive. There appears to be no useful information beyond path lengths of ~8, even for transformers. For both the GCN and the transformer, there is a mismatch between the maximum distance at which we obtain significant influence scores, and the maximum distance that affects accuracy. This indicates that at least some of the observed influence of distant nodes is 'spurious' in that it affects the model's predictions without increasing accuracy.
 
 | ![img.png](assets/noising_experiment.png) | ![img.png](assets/noising_relative_f1_score.png)| 
 | -------- | -------- |
-|  Figure 6.1 Relative accuracy obtained when replacing node features at different distances with baseline value    | Figure 6.2 Relative F1 score obtained when replacing node features at different distances with baseline value  |  
-
-There are a number of interesting observations from this graph:
-* The transformer does leverage distant nodes more effectively than the GCN, even at distances that the GCN can 'reach'. This may indicate that the GCN is suffering from over-squashing, although it is not conclusive.
-* There appears to be no useful information beyond path lengths of ~8, even for transformers.
-* For both the GCN and the transformer, there is a mismatch between the maximum distance at which we obtain significant influence scores, and the maximum distance that affects accuracy. This indicates that at least some of the observed influence of distant nodes is 'spurious' in that it affects the model's predictions without increasing accuracy.
+| <a id="fig6_1"> Figure 6.1: </a> Relative accuracy obtained when replacing node features at different distances with baseline value | <a id="fig6_2"> Figure  6.2: </a> Relative F1 score obtained when replacing node features at different distances with baseline value  |  
 
 
 # 5. Qualitative Experiments
 ## 5.1 Does model performance correlate with graph qualities that predict over-squashing?
 
-Recall that the original LRGB paper claimed that their datasets were good benchmarks for LRI based on three statistics of the graphs they contained: the average shortest path distance between nodes in the graph, the graph diameter, and the number of nodes. 
+The original paper [1](#1) claim that their datasets were good benchmarks for LRI based on three statistics of the graphs they contained: the average shortest path distance between nodes in the graph, the graph diameter, and the number of nodes. We hypothesise that if these statistics were indicative of the presence of long range interactions in the dataset, then we would be able to correlate them with the relative performance of different models. For example, because transformers are less susceptible to over-squashing than GCNs, we expect that they should outperform GCNs on tasks with high values of each statistic.
 
-We hypothesised that if these statistics were indicative of the presence of long range interactions in the dataset, then we would be able to correlate them with the relative performance of different models. For example, because transformers are less susceptible to over-squashing than GCNs, we expected that they should outperform GCNs on tasks with high values of each statistic.
-
-While it's not clear that the statistics we mentioned are related to over-squashing, we also investigated an alternative statistic that has a stronger theoretical relationship with over-squashing.
-
-Recently [2] has shown that the degree of over-squashing can be measured by spectral properties of a graph. The Cheeger constant $h_G$ of a graph G is defined as:
+While it's not clear that the statistics we mentioned are related to over-squashing, we also investigate an alternative statistic that has a stronger theoretical relationship with over-squashing. Recently [2](#2) has shown that the degree of over-squashing can be measured by spectral properties of a graph. The Cheeger constant $h_G$ of a graph G is defined as:
 
 $$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{\lvert\delta S \rvert}{\min vol(S), vol(V/S)}$$
 
-where the _boundary_  $\lvert\delta S \rvert$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S\}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with sparse intersection, $S$ and $V\setminus S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets.
-
-Notice that low Cheeger constant does not necessarily imply a bottlenecking effect.
-A 'stretched' out graph
+where the _boundary_  $\lvert\delta S \rvert$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S\}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with sparse intersection, $S$ and $V\setminus S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets. A low Cheeger constant does not necessarily imply a bottlenecking effect.
 
 ![img.png](assets/high_asp_low_cheeger_graph.png)
 
-would have a low Cheeger constant but high average shortest path. However, a low average shortest path would imply that there are many pairs of nodes that are close together, and so we would expect that the graph is not stretched out and that the graph would have sparse connections between clusters. Therefore, we expect that a low Cheeger constant and low average shortest path together to be indicative of over-squashing.
+A 'stretched' out graph would have a low Cheeger constant but high average shortest path. However, a low average shortest path would imply that there are many pairs of nodes that are close together, and so we would expect that the graph is not stretched out and that the graph would have sparse connections between clusters. Therefore, we expect that a low Cheeger constant and low average shortest path together to be indicative of over-squashing.
 
-[2] showed that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that describes how 'bottlenecked' the neighbourhood of each edge in the graph is in terms of the number of cycles it appears. The definition is too lengthy to reproduce here, but negative values for a given edge $(i,j)$ can be interpreted as indicating that this edge forms a 'bridge'  between two sets of vertices.
-
-In turn, this curvature controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally, although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$. 
+[2](#2) show that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that describes how 'bottlenecked' the neighbourhood of each edge in the graph is in terms of the number of cycles it appears. The negative values for a given edge $(i,j)$ can be interpreted as indicating that this edge forms a 'bridge' between two sets of vertices. In turn, this curvature controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally, although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$. 
 
 In summary, we expect that graphs with low Cheeger values should suffer more from over-squashing.
 
-### 3.5 Do average shortest path and graph diameter correlate with model performance?
+### 5.2 Do average shortest path and graph diameter correlate with model performance?
 We observed no correlation between the relative performance of any of the models and the average shortest path nor the diameter. This affirms our suspicion that this statistic is not indicative of the presence of LRI in the dataset.
 
 
@@ -222,9 +205,7 @@ We observed no correlation between the relative performance of any of the models
 
 
 
-However, by plotting the distribution of average shortest path
-against the Cheeger constant and measuring the correlation between the distribtuion and the performance of the models,
-we found a positive correlation between the distribution and the performance in the LRI sensitive models:
+However, by plotting the distribution of average shortest path against the Cheeger constant and measuring the correlation between the distribtuion and the performance of the models, we found a positive correlation between the distribution and the performance in the LRI sensitive models.
 | <img width="700" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9ccbe1d5-c899-47b4-9b50-9c733c56f43e"> | ![img.png](assets/distribution_cheeger_asp.png) | 
 | -------- | -------- | 
 |  <a id="tab6"> Table 6 </a>: Correlation between accuracy and the graph distribution | <a id="fig7"> Figure 7 </a>: Cheeger Value vs Average Shortest Path Distribution for GCN |
@@ -240,8 +221,6 @@ We also measured the ratio between transformer accuracy against each model's acc
 |  <a id="fig8"> Figure 8 </a>: Graph Transformer's heatmap for Cheeger Value vs Average Shortest Path | <a id="fig9"> Figure 9 </a>: Graph Count heatmap for Cheeger Value vs Average Shortest Path|
 
 
-
-
 ## 5.3 Qualitative investigation of graph characteristics 
 To affirm our hypothesis, we conducted a qualitative analysis. We sampled graphs from different bins of the average shortest path-Cheeger constant distribution to examine their bottle neck behaviour. We have indeed seen that the relationship between Cheeger constant and average shortest path accords with our theory.
 When we fix the Cheeger constant between $0.0667$ and $0.133$, and order the graph's average shortest path from top to bottom, we get the following:
@@ -251,19 +230,13 @@ When we fix the Cheeger constant between $0.0667$ and $0.133$, and order the gra
 
 
 
-We began seeing graphs with sparse connections along average shortest path 6.93.  as seen in [Figure 9](#fig9)
+We began seeing graphs with sparse connections along average shortest path 6.93 as seen in [Figure 9](#fig9)
 
 Both the qualitative analysis and the accuracies analysis suggest that graphs with high LRI would have low Cheeger constant and average shortest path of length 6.93 and below. However, as can be seen, the majority of graphs in the dataset do not suffer from bottlenecking.
 
-
-
-
-Plan:
-* can prove that oversquashing is a problem based on the application of a problem that is designed to fix oversquashing.
-
 ### 6. Conclusion
 
-The goals of this study were to replicate the results of the original study, to provide a better characterisation of which of the three LRI factors were most important and finally to assess whether the LRGB was indeed a good benchmark for LRI. The first of these was met unequivocally, whereas the other two deserve more qualified discussion.
+The goals of this study were to replicate the results of the original study, provide alternative approaches to mitigate the problem of LRI and to provide a better characterisation of which of the three LRI factors were most important and finally to assess whether the LRGB was indeed a good benchmark for LRI. The first two of these were met unequivocally, whereas the other two deserve more qualified discussion.
 
 ### 6.1 Which LRI factors are most prevalent?
 The only LRI factor we found unequivocal evidence for was 'under-reaching'.We showed that the predictions of transformer models were heavily influenced by distant nodes. Moreover, we showed that distant nodes (up to 8 nodes away) had a meaningful influence on the accuracy of those predictions. This shows that our method can be used to place a lower bound on the length of interaction on a candidate LRI dataset, although this is only possible on node-level tasks.
