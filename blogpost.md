@@ -62,9 +62,9 @@ Because we had limited computational resources, we chose to focus on the PascalV
 
 # 4. Experiments
 
-From the paper, we opt to train GCN and Transformer with Laplacian Positional Encodings (Transformer+LapPE) as representatives for 'local' and 'non-local' methods respectively on both the PascalVOC-SP and COCO-SP datasets. We were able to replicate the results using these models and we use them to test our hypothesis about the presence of LRI in the datasets.
+From the paper, we opt to train GCN and Transformer with Laplacian Positional Encodings (Transformer+LapPE). We were able to replicate the results using these models and we use them to test our hypothesis about the presence of LRI in the datasets.
 
-Additionally, we look at addressing the LRI problem through other approaches in this section. In this process, we also experiment with few other models. For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. We also deviate from the original paper in using a cosine learning rate scheduler rather than the default 'reduce on plateau' scheduler, because we face compatibility issues when using the latter. This does not affect our results substantively, but accounts for minor differences between our results and the original paper.
+Additionally, we look at addressing the LRI problem through other approaches in this section. In this process, we also experiment with few other models. For a uniform comparison of performance across models, we follow the convention of limiting the number of parameters to approximately 500k. We also deviate from the original paper in using a cosine learning rate scheduler rather than the default 'reduce on plateau' scheduler, because we face compatibility issues when using the latter. This does not affect our results substantively, but accounts for minor differences between our results and the original paper. Due to computational constraints, we use a subset of classes of COCO-SP dataset. 
 
 ## 4.1 Alternative approaches to mitigate LRI problem:
 
@@ -72,7 +72,7 @@ Additionally, we look at addressing the LRI problem through other approaches in 
 
 Since, one of the main problem of LRI in MP-GNNs is over-squashing, a quick survey revealed that many of the existing literature try addressing this issue with help of topological change in the graphs using rewiring methods. More recently, [[2]](#2) proposed a curvature-based rewiring method for graphs based on Ricci curvature in Riemannian geometry. They introduce this as the Stochastic Discrete Ricci Flow (SDRF) algorithm which adds new edges in places where a strongly negative curve exists in order to smoothen out 'bottlenecks'.
 
-We implement the SDRF algorithm to rewire graphs in the PascalVOC-SP dataset. Since, the algorithm only takes into account the graph topology and remains agnostic to other features, there are no edge features for the new edges. Hence, in order to have a fair comparison, we first trained the GCN and Transformer+LapPE model on graphs with their edge features removed (i.e replacing with ones tensor) and obtained a baseline F1 performance. We then proceeded with adding a certain percentage of total edges in each graph of the test dataset using SDRF algorithm and benchmarked the trained model. To determine if rewiring with SDRF is beneficial, we compare the resulting F1 scores with baseline.
+We implement the SDRF algorithm to rewire graphs in the PascalVOC-SP dataset. Since, the algorithm only takes into account the graph topology and remains agnostic to other features, there are no edge features for the new edges. Hence, in order to have a fair comparison, we first trained the GCN and Transformer+LapPE model on graphs with their edge features removed  and obtained a baseline F1 performance. We then proceeded with adding a certain percentage of total edges in each graph of the test dataset using SDRF algorithm and benchmarked the trained model. To determine if rewiring with SDRF is beneficial, we compare the resulting F1 scores with baseline.
 
 
 | ![](assets/sdrf_1.png) |![](assets/sdrf_2.png) |
@@ -81,7 +81,9 @@ We implement the SDRF algorithm to rewire graphs in the PascalVOC-SP dataset. Si
 
 <sub><sup>**Note** - baseline f1 is the case when no edges are added i.e. ratio 0.0</sup></sub>
 
-The results however show that rewiring actually negatively affects the performance of GCN model. We attribute this outcome as the nature of the data which are 2D image superpixel graphs. Even though there might exist bottlenecks in this space, connecting and passing information between disparate patches of an image might truly confuse the trained model. The F1 scores of the Transformer+LapPE model remains the same throughout, which was expected as this model fully-connects the graph regardlessly.
+The results show that rewiring negatively affects the performance of GCN model. We attribute this outcome as the nature of the data which are 2D image superpixel graphs. Even though bottlenecks might exist in this space, connecting and passing information between disparate patches of an image might truly confuse the trained model. The F1 scores of the Transformer+LapPE model remains the same throughout, which was expected as this model fully-connects the graph regardlessly.
+
+Even though this method didn't solve the over-squashing problem, the theory helps us to form intuitive experiments to visualize over-squashing as we show in [Section 5](#sec5).
 
 ### 4.1.2 Geometric deep learning: 
 Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore architectures where instead of changing the semantic meaning of the graph by adding edges, we can make the features of the graph itself more expressive. One such domain where we can make the message passing approach of GNNs more expressive is Geometric Deep Learning (GEDL). 
@@ -93,12 +95,12 @@ Owing to the failure of the SDRF algorithm to mitigate LRI problem, we explore a
  __Result Discussion:__  In case of invariant function, information is removed hence the orientation can no longer be reconstructed from the output. Similarly, an equivariant function preserves information, since all geometric information is preserved throughout the network. We hope that E($n$)-invariant and E($n$)-equivariant architectures add a level of additional expressivity over the vanilla GCN, so they can perform better than GCN. This result is affirmed by our finding as seen in [Table 1](#tab1) and [Table 2](#tab2). Also, it makes sense that  E($n$)-equivariant network outperforms  E($n$)-invariant as E($n$)-equivariant is more expressive.  To see whether Jumping Knowledge techniques introduced in [[4]](#4) help to improve performance of  E($n$)-invariant and equivariant models, we implement two variants of it. JK1 denotes the jumping knowledge variant 1 where we concatenate hidden outputs of all layers. And JK2 denotes the jumping knowledge variant where we do maximum pooling of all the layers. [Table 3](#tab3) shows these results. The E(n)-Invariant model's F1 score is improved by concatenating/max pooling layer outputs. The E(n)-Equivariant model's F1-score does not improve by concatenating/max pooling. These techniques are usually applied to hep with over-smoothing but in case of E($n$)-invariant and equivariant we do not observe any drastical improvement by using them.
    
 #### E(3) Steerable GNN
-E(3) Equivariant Graph Neural Networks (SEGNNs) generalise equivariant graph networks, such that node and edge attributes are not restricted to invariant scalars, but can contain covariant information, such as vectors or tensors. With SEGNNs we are able to incorporate geometric and physical information in both the message and update functions. Here we take the 14-dimentional node embedding of the long-range PascalVOC-SP and COCO-SP datasets and add another dimention of zeros to it thus making it 15-dimentional. Further we break down the node embedding into 12 type-0 vectors and 1 type-1 vector. The edge attributes are obtained via the spherical harmonic embedding of relative positions. The messages and feature updates are calculated as shown in the [Figure 4](#fig4).Also note that here we use steerable MLPs, which maps between steerable input and output vector spaces via the Clebsch-Gordan tensor product and applies non-linearities
-afterwards. Note that here we use gated non-linearities
+Steerable E(3) Equivariant Graph Neural Networks (SEGNNs) generalise equivariant graph networks, such that node and edge attributes are not restricted to invariant scalars, but can contain covariant information, such as vectors or tensors. With SEGNNs we are able to incorporate geometric and physical information in both the message and update functions. Here we take the 14-dimentional node embedding of the long-range  datasets and add another dimension of zeros to it thus making it 15-dimentional. Further we break down the node embedding into 12 type-0 vectors and 1 type-1 vector. The edge attributes are obtained via the spherical harmonic embedding of relative positions. The messages and feature updates are calculated as shown in the [Figure 4](#fig4). Also note that here we use steerable MLPs, which maps between steerable input and output vector spaces via the Clebsch-Gordan tensor product and applies non-linearities
+afterwards. 
 
- __Result Discussion:__ From  [Table 1](#tab1) and [Table 2](#tab2) we can see that SEGNNs outperform E(n)-Invariant and E(n)-Equivariant models. We believe that main reason behind this is the fact that SEGNNs are able to incorporate the edge direction vectors of relative positionns during the calculation of message. This is unlike the E(n) models which consider only the distance between any two nodes.Additionally we know that SEGNNs generalise equivariant graph networks, such that node and edge attributes are not restricted to invariant scalars, but can contain covariant information. 
+ __Result Discussion:__ From  [Table 1](#tab1) and [Table 2](#tab2) we can see that SEGNNs outperform E($n$)-Invariant and E($n$)-Equivariant models. We believe that main reason behind this is the fact that SEGNNs are able to incorporate the edge direction vectors of relative positionns during the calculation of message. This is unlike the E($n$) models which consider only the distance between any two nodes.Additionally we know that SEGNNs generalise equivariant graph networks, such that node and edge attributes are not restricted to invariant scalars, but can contain covariant information. 
 
-@Aditya 
+
 | ![](assets/ennegnn.png)| 
 | -------- | 
 |  <a id="fig3"> Figure 3 </a>: E(n)-Invariant and E(n)-Equivariant Architecture  |  
@@ -109,9 +111,10 @@ afterwards. Note that here we use gated non-linearities
 
 ### 4.1.3 Which models perform best?
 
-@Aditya We also tested a variety of MPNN models that explicitly encoded geometric information. We felt that these were a 'fairer' test of the capacity of a message passing network, because the geometric relationship between two nodes is more semantically meaningful than the one imposed by the arbitrary topology of the superpixel boundary graph. We found that these models gave comparable performance  to the transformer, even with as few as two message passing layers.  From  [Table 1](#tab1) and [Table 2](#tab2) we can see that SEGNNs outperform E(n)-Invariant and E(n)-Equivariant models but loses to transformer only on Pascal dataset. We hypothesize that the reason SEGNNs perform so well because incorpation of directional information in the messages  as well the face that the messages are modelled to be E(3) equivariant   .Additionally  node and edge attributes are no longer restricted to invariant
-scalars, but can contain covariant information, such as vectors or tensors. 
-Recall that our second goal above was to see whether improvements on the LRGB were caused by an improved ability to model long range interactions. From this point of view, these results are worrisome, because we found that a model that could only use local information - which is by definition not capable of modelling LRI - was nearly as performant as one that could model interactions between all nodes. (not sure whether the results are worrisome..if possible ..discuss this too)
+The GEDL models  perform comparably to the transformer, even with few message passing layers. From  [Table 1](#tab1) and [Table 2](#tab2) we can see that SEGNNs outperform E($n$)-Invariant and E($n$)-Equivariant models but has marginally lesser F1 score than transformer on PascalVOC-SP dataset. Note that due to computational constraints, we couldn't train the SEGNN model till loss convergence. So we see a promising higher performance of SEGNN compared to transfromers. We hypothesize that the reason SEGNNs perform so well because of incorpation of directional information in the messages  as well the fact that the messages are modelled to be E(3) equivariant. 
+ 
+ The results imply that the Geometric Deep Learning can be an exciting and novel viewpoint to look at the LRI problem. The advantage being, that we can make precise use of domain-specific graph information such as positional information, to make the graph interactions more expressive. A future work for us can be to define more specific experiments to study and quantify the relationship between LRI and GEDL models. 
+ 
 
 | <img width="555" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/8a49f585-8e3d-440d-8f37-b86b17286e12"> | <img width="475" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/e03ffad4-3177-4063-a441-d6c07c947a36"> | 
 | -------- | -------- | 
@@ -165,27 +168,27 @@ __Result Discussion__: The transformer leverages distant nodes more effectively 
 | <a id="fig6_1"> Figure 6.1: </a> Relative accuracy obtained when replacing node features at different distances with baseline value | <a id="fig6_2"> Figure  6.2: </a> Relative F1 score obtained when replacing node features at different distances with baseline value  |  
 
 
-# 5. Qualitative Experiments
+#  <a id = "sec5"> 5. Qualitative Experiments  </a>
 ## 5.1 Does model performance correlate with graph qualities that predict over-squashing?
 
-The original paper [1](#1) claim that their datasets were good benchmarks for LRI based on three statistics of the graphs they contained: the average shortest path distance between nodes in the graph, the graph diameter, and the number of nodes. We hypothesise that if these statistics were indicative of the presence of long range interactions in the dataset, then we would be able to correlate them with the relative performance of different models. For example, because transformers are less susceptible to over-squashing than GCNs, we expect that they should outperform GCNs on tasks with high values of each statistic.
+The original paper [[1]](#1) claim that their datasets were good benchmarks for LRI based on three statistics of the graphs they contained: the average shortest path distance between nodes in the graph, the graph diameter, and the number of nodes. We hypothesize that if these statistics were indicative of the presence of long range interactions in the dataset, then we would be able to correlate them with the relative performance of different models.
 
-While it's not clear that the statistics we mentioned are related to over-squashing, we also investigate an alternative statistic that has a stronger theoretical relationship with over-squashing. Recently [2](#2) has shown that the degree of over-squashing can be measured by spectral properties of a graph. The Cheeger constant $h_G$ of a graph G is defined as:
+While it's not clear that the statistics we mentioned are related to over-squashing, we also investigate an alternative statistic that has a stronger theoretical relationship with over-squashing. [[2]](#2) has shown that the degree of over-squashing can be measured by the Cheeger constant $h_G$ of a graph G which is defined as:
 
 $$h_G = \min_{S \subseteq G} h_S \text{  where  }  h_S = \frac{\lvert\delta S \rvert}{\min vol(S), vol(V/S)}$$
 
-where the _boundary_  $\lvert\delta S \rvert$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S\}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with sparse intersection, $S$ and $V\setminus S$, such that there are few edges going between them. In other words, there is a bottleneck between the two sets. A low Cheeger constant does not necessarily imply a bottlenecking effect.
+where the _boundary_  $\lvert\delta S \rvert$ is defined as the set of edges 'leaving S' $\delta S = \{ (i, j) : i \in S, j \not\in S\}$ and the _volume_ $vol(S) = \sum_{i \in S} \text{degree}(i)$. In other words, the Cheeger constant is small when we can find two large sets of vertices with sparse intersection, $S$ and $V\setminus S$, such that there are few edges going between them which forms a bottleneck. 
 
 ![img.png](assets/high_asp_low_cheeger_graph.png)
 
 A 'stretched' out graph would have a low Cheeger constant but high average shortest path. However, a low average shortest path would imply that there are many pairs of nodes that are close together, and so we would expect that the graph is not stretched out and that the graph would have sparse connections between clusters. Therefore, we expect that a low Cheeger constant and low average shortest path together to be indicative of over-squashing.
 
-[2](#2) show that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that describes how 'bottlenecked' the neighbourhood of each edge in the graph is in terms of the number of cycles it appears. The negative values for a given edge $(i,j)$ can be interpreted as indicating that this edge forms a 'bridge' between two sets of vertices. In turn, this curvature controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of oversquashing). Finally, although the Cheeger value is infeasible to compute exactly, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$. 
+[[2]](#2) show that $2h_G$ is an upper bound for the minimum 'balanced Forman curvature' of the graph, a quantity that describes how 'bottlenecked' the neighbourhood of each edge in the graph is in terms of the number of cycles it appears. The negative values for a given edge $(i,j)$ can be interpreted as indicating that this edge forms a 'bridge' between two sets of vertices. In turn, this curvature controls how effectively gradients can populate through each neighbourhood of the graph (one possible definition of over-squashing). Finally, although the exact Cheeger value is infeasible to compute, the first eigenvalue $\lambda_1$ of the graph Laplacian is a strict upper bound for $2 h_G$. 
 
 In summary, we expect that graphs with low Cheeger values should suffer more from over-squashing.
 
 ### 5.2 Do average shortest path and graph diameter correlate with model performance?
-We observed no correlation between the relative performance of any of the models and the average shortest path nor the diameter. This affirms our suspicion that this statistic is not indicative of the presence of LRI in the dataset.
+We observe no correlation between the relative performance of any of the models and the average shortest path nor the diameter. This affirms our suspicion that this statistic is not indicative of the presence of LRI in the dataset.
 
 
 | <img width="457" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/d82a26ae-4c3d-4433-a366-05bc82f3c638"> | <img width="458" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/8d19afaf-3792-4cb8-bbce-6eda2e18123b"> | 
@@ -194,16 +197,14 @@ We observed no correlation between the relative performance of any of the models
 
 
 
-However, by plotting the distribution of average shortest path against the Cheeger constant and measuring the correlation between the distribtuion and the performance of the models, we found a positive correlation between the distribution and the performance in the LRI sensitive models.
+However, by plotting the distribution of average shortest path against the Cheeger constant and measuring the correlation between the distribution and the performance of the models, we find a positive correlation between the distribution and the performance in the LRI sensitive models.
 | <img width="700" alt="image" src="https://github.com/madhurapawaruva/uva-dl2-team11-forpeer/assets/117770386/9ccbe1d5-c899-47b4-9b50-9c733c56f43e"> | ![img.png](assets/distribution_cheeger_asp.png) | 
 | -------- | -------- | 
 |  <a id="tab6"> Table 6 </a>: Correlation between accuracy and the graph distribution | <a id="fig7"> Figure 7 </a>: Cheeger Value vs Average Shortest Path Distribution for GCN |
 
+When we measure accuracy against average shortest path with control over the Cheeger constant, we find no correlation between the average shortest path and the accuracy of the models.
 
-It is however important to note that our results are not significant.
-When we measured accuracy against average shortest path with control over the Cheeger constant, we found no correlation between the average shortest path and the accuracy of the models.
-
-We also measured the ratio between transformer accuracy against each model's accuracy along the distribution of graphs. We have noticed that when controlled for Cheeger constant, we notice that lower average shortest path translate to better performance of transformer against the other models as seen in [Figure 8](#fig8).
+We also measure the ratio between transformer accuracy against each model's accuracy along the distribution of graphs. We notice that lower average shortest path translate to better performance of transformer against the other models when we control the Cheeger constant ([Figure 8](#fig8)).
 
 | ![img.png](assets/heatmap_trans_gcn_acc.png) |![img.png](assets/graph_distro_amount.png) | 
 | -------- | -------- | 
@@ -211,7 +212,7 @@ We also measured the ratio between transformer accuracy against each model's acc
 
 
 ## 5.3 Qualitative investigation of graph characteristics 
-To affirm our hypothesis, we conducted a qualitative analysis. We sampled graphs from different bins of the average shortest path-Cheeger constant distribution to examine their bottle neck behaviour. We have indeed seen that the relationship between Cheeger constant and average shortest path accords with our theory.
+To affirm our hypothesis, we conduct a qualitative analysis. We sample graphs from different bins of the average shortest path-Cheeger constant distribution to examine their bottleneck behaviour. We see that the relationship between Cheeger constant and average shortest path accords with our theory.
 When we fix the Cheeger constant between $0.0667$ and $0.133$, and order the graph's average shortest path from top to bottom, we get the following:
 | ![img.png](assets/graph0.png) | ![img.png](assets/graph1.png) | ![img.png](assets/graph2.png) |
 | -------- | -------- | -------- |
@@ -219,9 +220,7 @@ When we fix the Cheeger constant between $0.0667$ and $0.133$, and order the gra
 
 
 
-We began seeing graphs with sparse connections along average shortest path 6.93 as seen in [Figure 9](#fig9)
-
-Both the qualitative analysis and the accuracies analysis suggest that graphs with high LRI would have low Cheeger constant and average shortest path of length 6.93 and below. However, as can be seen, the majority of graphs in the dataset do not suffer from bottlenecking.
+We begin seeing graphs with sparse connections along average shortest path 6.93 as seen in [Figure 9](#fig9). Both the qualitative analysis and the accuracies analysis suggest that graphs with high LRI would have low Cheeger constant and average shortest path of length 6.93 and below. However, as can be seen, the majority of graphs in the dataset do not suffer from bottlenecking.
 
 ### 6. Conclusion
 
