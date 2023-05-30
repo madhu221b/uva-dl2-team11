@@ -153,11 +153,19 @@ We can see that the influence scores for transformers are high for longer distan
 
 While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. From [Table 1](#tab1) we saw that the transformer has a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer is over-fitting to distant nodes, and they are unimportant when generalising to the test set.
 
-To test this hypothesis explicitly, we test how the accuracy of our models change when we replacedthe input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $x\_d$ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node. Also, denote $x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
+To test this hypothesis explicitly, we test how the accuracy of our models change when we replaced the input features at a specific distance (as measured by shortest path) from the target node with the mean input features of the dataset. This corresponds to evaluating the accuracy of the _expected_ prediction when only a subset of the information is known. That is, let $x\_d$ denote all the input features, at distance $d \in \{ 1, ... D \}$ from the target node. Also, denote $x_{\bar{d}} = \{ x_i, i \neq d \}$ . Then we measure the accuracy of the model $f_d(x)$ given by:
 
 $$ f_{d}(x) =  E_{X_1, ..., X_D}[f(x) | X_{\bar{d}}] $$
- 
- The argument was inspired by [[15]](#15). Therefore, if there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes.  The results are reported in [Figure 6.1](#fig6_1), where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
+
+$$ =  E_{X_{\bar{d}} | {X_d}} [f(x)] $$
+
+$$ \approx  E_{X_{\bar{d}} }[f(x)] $$
+
+$$ \approx  f(x_d, E[X_{\bar{d}}]) $$
+
+
+
+ The argument was inspired by [[15]](#15) - the last two steps follow from assuming approximate independence of the input features, and local linearity of the model. Therefore, if there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes.  The results are reported in [Figure 6.1](#fig6_1), where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
 
 __Result Discussion__: The transformer leverages distant nodes more effectively than the GCN, even at distances that the GCN can 'reach'. This may indicate that the GCN is suffering from over-squashing, although it is not conclusive. There appears to be no useful information beyond path lengths of ~8, even for transformers. For both the GCN and the transformer, there is a mismatch between the maximum distance at which we obtain significant influence scores, and the maximum distance that affects accuracy. This indicates that at least some of the observed influence of distant nodes is 'spurious' in that it affects the model's predictions without increasing accuracy.
 
