@@ -155,7 +155,7 @@ The results of this analysis are shown in [Figure 5.1](#fig5_1) and [Figure 5.2]
 
 We can see that the influence scores for transformers are positive far beyond the maximum distance reachable by the local models, which indicates that they are under-reaching. Interestingly, we _also_ find that the influence scores of the local models peak before their maximum reach, contradicting our second prediction. This is interesting, because it indicates that even though networks could reach these nodes, they still avoided using them in the same way as the transformers.
 
-Additionally we see that SEGNNs also have a nonzero influence score for a longer distance which we attribute to the presence of residual connections in the network architecture.
+Additionally, we see that SEGNNs also have a nonzero influence score for a longer distance which we attribute to the presence of residual connections in the network architecture.
 
 ###  4.2.2 Noising Experiment:  Are distant nodes important for achieving good __accuracy__?
 
@@ -170,8 +170,6 @@ $$ =  E_{X_{\bar{d}} | {X_d}} [f(x)] $$
 $$ \approx  E_{X_{\bar{d}} }[f(x)] $$
 
 $$ \approx  f(x_d, E[X_{\bar{d}}]) $$
-
-
 
  The argument was inspired by [[15]](#15) - the last two steps follow from assuming approximate independence of the input features, and local linearity of the model. Therefore, if there is useful information in distant nodes, we expect to see a large drop in accuracy when we replace the features of those nodes.  The results are reported in [Figure 6.1](#fig6_1), where the y-axis shows either the accuracy or macro-weighted f1 score as a proportion of what is obtained when the original input features are used.
 
