@@ -125,13 +125,19 @@ The GEDL models  perform comparably to the transformer, even with few message pa
 | <a id="tab3">Table 3 </a>: Results for Jumping Knowledge Representations (JK) for PascalVOC-SP dataset |
 
 
-## 4.2 Influence Scores: Is performance correlated with increased importance of distant nodes?
+## 4.2 Does the dataset show evidence of long range interactions?
+
+Now that we have working examples of both transformers and 'local' models, we can use them to answer the question with which we began: which, if any, of the three LRI factors is present in the Pascal dataset.
+
+We will begin by exploring whether we can explain the relative performance of the models in terms of their ability to leverage information from nodes that are far away. That is, we will ask whether the local models suffer from 'under-reaching'.
+
+### 4.2.1 Influence Scores: Are model gradients correlated with increased importance of distant nodes?
 
 If the PascalVOC-SP and COCO datasets was truly characterised by LRI, we should expect two things:
-- for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to the accuracy of their predictions.
+- for models that treat distant nodes the same way as nearby ones (like transformers), we expect that the features of those distant nodes are important to their predictions than for local models.
 - for local architectures with $L$ total layers, we expect that the importance of nodes should be roughly equal for all nodes that are less than or equal $L$, and 0 after that.
 
-To test these hypotheses, we utilise the concept of  __influence score and distribution__ from [[4]](#4) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i^{th}$ logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
+To test these hypotheses, we used __influence scores__ [[4]](#4) to quantify the importance of nodes at different distances from each target node. Briefly, if we let $h_v^{(0)}$ be the input features associated with node $v$, and we let $y_u^{(i)}$ be the $i^{th}$ logit calculated during the classification of node $u$, then the influence of $v$ on $u$ is calculated as:
 
 $$ I(u, v) = \sum_i | \frac{\delta  y_u^{(i)}}{\delta h_v^{(0)} } | $$
 
@@ -147,9 +153,11 @@ The results of this analysis are shown in [Figure 5.1](#fig5_1) and [Figure 5.2]
 | -------- | -------- |
 | <a id="fig5_1"> Figure 5.1 </a>: Influence Scores for PascalVOC-SP | <a id="fig5_2"> Figure 5.2 </a>: Influence Scores for COCO-SP  |
 
-We can see that the influence scores for transformers are high for longer distances. This is mainly because they work on a fully connected graph. Additionally we see that SEGNNs also have a nonzero influence score for a longer distance which we attribute to the presence of residual connections in the network architecture.
+We can see that the influence scores for transformers are positive far beyond the maximum distance reachable by the local models, which indicates that they are under-reaching. Interestingly, we _also_ find that the influence scores of the local models peak before their maximum reach, contradicting our second prediction. This is interesting, because it indicates that even though networks could reach these nodes, they still avoided using them in the same way as the transformers.
 
-##  4.3 Noising Experiment:  Are distant nodes important for achieving good accuracy?
+Additionally we see that SEGNNs also have a nonzero influence score for a longer distance which we attribute to the presence of residual connections in the network architecture.
+
+###  4.2.2 Noising Experiment:  Are distant nodes important for achieving good __accuracy__?
 
 While the above analysis shows that the predictions of our transformer are affected by distant nodes, it does not necessarily follow that _accurate_ predictions depend on the information in those nodes. From [Table 1](#tab1) we saw that the transformer has a very large gap in performance between the train and test data compared to the other models. Therefore, it's possible that the transformer is over-fitting to distant nodes, and they are unimportant when generalising to the test set.
 
@@ -246,7 +254,7 @@ Current results show that GEDL models outperform GCN, hinting us that their expr
 
 1. **Amity**: She was responsible for the qualitative analysis of the graphs and the analysis of the average shortest path and Cheeger constant against the accuracy results. She also wrote the metrics required for the graphs analysis.
  She also helped with the blogpost.
-1. **Nik Mather**: He performed the experiments relating shortest path distance to influence score distribution, F1-score and accuracy (although he relied on Madhura and Avik for the implementation of influence score's computation). He assisted in writing the code for the Cheeger value experiments. Additionally, he structured and drafted the majority of the content of the blogpost. 
+1. **Nik Mather**: He performed the experiments relating shortest path distance to influence score distribution, F1-score and accuracy (although he relied on Madhura and Avik for the implementation of influence score's computation). He assisted in writing the code for the Cheeger value experiments. Additionally, he structured the blogpost and wrote sections 1, 2, 4.2, 4,3 and 6. 
 2. **Avik Pal**: He and Madhura reproduced the original paper's experiments. He additionally carried out experiments related to rewiring, implemented the E($n$)-Equivariant model and worked on influence score computation. He also helped with his part in the blogpost.
 3. **Aditya Prakash Patra**: He wrote the code for SEGNN model along with performing all the experiments and ablations associated with it. He also contributed in writing his assigned section in the blogpost. 
 4. **Madhura Pawar**: She was responsible for reproducing the original experiments, building and maintaining the code infrastructure. She and Avik fixed quite some issues which we faced while trying to get the original code up and working. She implemented the E($n$)-Invariant model. Along with scripting and programming experiments which her colleagues needed, she was involved in creating illustrative architecture diagrams for the blogpost. Finally, she also helped proofread the blog and made necessary edits.
