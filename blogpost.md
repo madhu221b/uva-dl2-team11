@@ -127,7 +127,7 @@ The GEDL models  perform comparably to the transformer, even with few message pa
 
 ## 4.2 Does the dataset show evidence of long range interactions?
 
-Now that we have working examples of both transformers and 'local' models, we can use them to answer the question with which we began: which, if any, of the three LRI factors is present in the Pascal dataset.
+Now that we have working examples of both transformers and 'local' models, we can use them to answer the question with which we began: which, if any, of the three LRI factors is present in the Pascal dataset?
 
 We will begin by exploring whether we can explain the relative performance of the models in terms of their ability to leverage information from nodes that are far away. That is, we will ask whether the local models suffer from 'under-reaching'.
 
